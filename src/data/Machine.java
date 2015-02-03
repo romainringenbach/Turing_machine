@@ -151,7 +151,7 @@ public class Machine {
 
 		boolean ret = false;
 
-		if (reject_state.compareTo(state) == 0) {
+		if (reject_state.equals(state)) {
 			ret = true;
 		}
 
@@ -165,9 +165,7 @@ public class Machine {
 	 */
 
 	public String getMachine(){
-
 		return machine;
-
 	}
 
 }
