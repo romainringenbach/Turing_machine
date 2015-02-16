@@ -3,31 +3,31 @@ package data;
 public class Transition {
 
 	public String currentState;
-	public char redSymbole;
-	public char newSymbole;
+	public Character readSymbole;
+	public Character newSymbole;
 	public String direction;
 	public String nextState;
 	 
-	public Transition(String current, char redS, char newS, String dir, String next){
+	public Transition(String current, Character readS, Character newS, String dir, String next){
 		currentState = current;
-		redSymbole = redS;
+		readSymbole = readS;
 		newSymbole = newS;
 		direction = dir;
 		nextState = next;
 	}
 	
 	public String toString(){
-		return currentState + " " + redSymbole + " " + newSymbole + " " + direction + " " + nextState; 
+		return currentState + "  " + readSymbole + "  " + newSymbole + "  " + direction + "  " + nextState; 
 	}
 
 	
 	public String getCurrentState() {
 		return currentState;
 	}
-	public char getRedSymbole() {
-		return redSymbole;
+	public Character getReadSymbole() {
+		return readSymbole;
 	}
-	public char getNewSymbole() {
+	public Character getNewSymbole() {
 		return newSymbole;
 	}
 	public String getDirection() {

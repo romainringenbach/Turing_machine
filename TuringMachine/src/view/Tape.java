@@ -8,13 +8,14 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 
 public class Tape extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private ArrayList<Character> symList;
 	private ArrayList<JLabel> labelList;
-	private static final Color TAPE_COLOR = new Color(0x7c7c7c);
+	private static final Color TAPE_BORDER_COLOR = new Color(0x7c7c7c);
 
 	public Tape(){
 		this.setLayout(new GridLayout());
@@ -36,7 +37,7 @@ public class Tape extends JPanel {
 			addLabel.setOpaque(true);
 			addLabel.setPreferredSize(new Dimension(30,30));
 			addLabel.setText(c.toString());
-			addLabel.setBorder(BorderFactory.createMatteBorder(0,0,0,1,TAPE_COLOR));
+			addLabel.setBorder(BorderFactory.createMatteBorder(0,0,0,1,TAPE_BORDER_COLOR));
 			addLabel.setHorizontalAlignment(JLabel.CENTER);
 			labelList.add(addLabel);
 			this.add(addLabel);
@@ -51,7 +52,22 @@ public class Tape extends JPanel {
 	
 	public void setHead(int pos){
 		JLabel l = labelList.get(pos);
-		l.setBackground(Color.yellow);
+		if(l.getBackground() == Color.yellow){
+			l.setBackground(UIManager.getColor ("Panel.background"));
+		}
+		else{
+			l.setBackground(Color.yellow);
+		}
+	}
+	
+	public Character getChar(int pos){
+		JLabel l = labelList.get(pos);
+		return l.getText().charAt(0);
+	}
+	
+	public void setChar(int pos, Character c){
+		JLabel l = labelList.get(pos);
+		l.setText(c.toString());
 	}
 	
 	public void reset(){
@@ -63,10 +79,11 @@ public class Tape extends JPanel {
 	
 	private void setupEmptyTape(){
 		for(int j=0;j<50;j++){
-			JLabel empty = new JLabel();
+			JLabel empty = new JLabel("_");
 			empty.setPreferredSize(new Dimension(30,30));
-			empty.setBorder(BorderFactory.createMatteBorder(0,0,0,1,TAPE_COLOR));
+			empty.setBorder(BorderFactory.createMatteBorder(0,0,0,1,TAPE_BORDER_COLOR));
 			empty.setHorizontalAlignment(JLabel.CENTER);
+			labelList.add(empty);
 			this.add(empty);
 		}
 		this.revalidate();

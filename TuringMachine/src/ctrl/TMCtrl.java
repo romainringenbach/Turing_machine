@@ -19,20 +19,70 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener{
 	private TMView view;
 	private Machine data;
 	private int lect;
-	private Transition currentTransition;
+	private String currentState;
 	private Tape tape;
+	private boolean ended,started;
 	
 	public TMCtrl(TMView v, Machine d){
 		view = v;
 		data = d;
 		lect = 0;
+		ended = false;
+		started = false;
+		currentState = data.getInitState();
 		tape = view.getTapePanel();
-	} 
+	}
 	
 	/* --- Actions --- */
 	
-	private void doTransition(Transition t){
+	private void startButton(){
+		ended = false;
+		new Thread(){
+            public void run(){
+            	while(!ended){
+        			TMCtrl.this.doTransition();
+        			try {
+						Thread.sleep(800); //Can define a speed
+					} catch (InterruptedException e) {
+					}
+        		}
+            }
+        }.start();
+	}
+	
+	
+	private void startStepTM(){
+		TMCtrl.this.doTransition();
+	}
+	
+	private void doTransition(){
+		Character currentChar = tape.getChar(lect);
+		Transition t = data.nextAction(currentChar, currentState);
+		//Overwrite the new symbole
+		tape.setChar(lect, t.getNewSymbole());
+		//Set the direction of the head
+		if(t.getDirection().equals("r")){
+			tape.setHead(lect);
+			lect++;
+		}
+		else if(lect != 0){
+			tape.setHead(lect);
+			lect--;
+		}
+		tape.setHead(lect);
+		view.getTable().setRowSelectionInterval(data.getTrans().indexOf(t), data.getTrans().indexOf(t));
 		
+		if(data.isAccept(t.getNextState())){
+			this.end();
+			JOptionPane.showMessageDialog(view, "Etat acceptant !");
+		}
+		else if(data.isReject(t.getNextState())){
+			JOptionPane.showMessageDialog(view, "Etat rejetant !");
+		}
+		else{
+			//Set the new state
+			currentState = t.getNextState();
+		}
 	}
 	
 	
@@ -53,12 +103,13 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		Object src = e.getSource();
 		if(src == view.getButStart()){
-			this.init();
+			if(!started) this.init();
+			this.startButton();
 			//TODO:Lauch machine loop
 		}
 		if(src == view.getButStep()){
-			this.init();
-			//TODO:Lauch machine step by step
+			if(!started) this.init();
+			this.startStepTM();
 		}
 		if(src == view.getButStep2()){
 			this.init();
@@ -94,14 +145,26 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener{
 	/* -------------- */
 	
 	
+	/**
+	 * Setup the tape with the given string in the field and the first state
+	 * This field can't be empty
+	 */
 	private void init(){
+		started = true;
+		ended = false;
+		currentState = data.getInitState();
+
 		String input = view.getInputField().getText();
-		if(!input.equals("")){
+		if(!input.equals("")) 
 			tape.initTape(input);
-		}
-		else{
+		else 
 			JOptionPane.showMessageDialog(view, "Veuillez inscrire dans le champ ci-dessous le ruban initial.");
-		}
+	}
+	
+	private void end(){
+		lect = 0;
+		ended = true;
+		started = false;
 	}
 	
 }

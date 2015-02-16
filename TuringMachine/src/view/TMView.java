@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -17,10 +15,12 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import ctrl.TMCtrl;
 import data.Machine;
@@ -55,6 +55,8 @@ public class TMView extends JFrame{
 	private JList<Transition> listTransition;
 	private DefaultListModel<Transition> listModel;
 	private JPanel resetPanel;
+	private TransitionTableModel model;
+	private JTable table;
 	
 	public TMView(){
 		super();
@@ -91,30 +93,40 @@ public class TMView extends JFrame{
 		
 		//East
 		eastPanel = new JPanel();
-		eastPanel.setMinimumSize(new Dimension(200,250));
-		eastPanel.setPreferredSize(new Dimension(200,250));
-		eastPanel.setMaximumSize(new Dimension(200,250));
-		eastPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),"List",0,0,new Font("Arial", 0, 15)));
+		eastPanel.setMinimumSize(new Dimension(250,250));
+		eastPanel.setPreferredSize(new Dimension(250,250));
+		eastPanel.setMaximumSize(new Dimension(250,250));
+		//eastPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),"List",0,0,new Font("Arial", 0, 15)));
 		
-		listTransition = new JList<Transition>();
+		
+		model = new TransitionTableModel(data.getTrans());
+		table = new JTable(model);
+		table.setShowGrid(false);
+		table.setEnabled(false);
+		table.setIntercellSpacing(new Dimension(0,0));
+		table.getTableHeader().setReorderingAllowed(false);
+		table.getTableHeader().setResizingAllowed(false);
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+		table.setDefaultRenderer(Object.class, centerRenderer);
+		
+		/*listTransition = new JList<Transition>();
 		listModel = new DefaultListModel<Transition>();
-		/*int size = data.getStates().size();
-		/for(int index=0; index<size; index++){
-			//TODO:
-		    listModel.addElement(data.getStates().get(index));
+		int size = data.getTrans().size();
+		for(int index=0; index<size; index++){
+		    listModel.addElement(data.getTrans().get(index));
 		}
-		listTransition.setModel(listModel);
-		*/
-		eastScrollPane = new JScrollPane(listTransition);
+		listTransition.setModel(listModel);*/
+		eastScrollPane = new JScrollPane(table);
 		
-		eastScrollPane.setMinimumSize(new Dimension(190,270));
-		eastScrollPane.setPreferredSize(new Dimension(190,270));
-		eastScrollPane.setMaximumSize(new Dimension(190,270));
+		eastScrollPane.setMinimumSize(new Dimension(240,290));
+		eastScrollPane.setPreferredSize(new Dimension(240,290));
+		eastScrollPane.setMaximumSize(new Dimension(240,290));
 		
 		//West
 		westPanel = new JPanel();
-		westPanel.setMinimumSize(new Dimension(380,250));
-		westPanel.setPreferredSize(new Dimension(380,250));
+		westPanel.setMinimumSize(new Dimension(330,250));
+		westPanel.setPreferredSize(new Dimension(330,250));
 		westPanel.setLayout(new BoxLayout(westPanel, BoxLayout.PAGE_AXIS));
 		westPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),"Menu",0,0,new Font("Arial", 0, 15)));
 		
@@ -220,6 +232,10 @@ public class TMView extends JFrame{
 
 	public DefaultListModel<Transition> getListModel() {
 		return listModel;
+	}
+
+	public JTable getTable() {
+		return table;
 	}
 
 	public JTextField getInputField() {
