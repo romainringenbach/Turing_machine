@@ -1,8 +1,11 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -15,11 +18,12 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
 import ctrl.TMCtrl;
-import data.TMData;
+import data.Machine;
 import data.Transition;
 
 public class TMView extends JFrame{
@@ -31,7 +35,7 @@ public class TMView extends JFrame{
 	
 	private static final long serialVersionUID = 1L;
 	private JPanel mainPanel;
-	private JPanel tapePanel;
+	private Tape tapePanel;
 	private JLabel tapeLabel;
 	private JScrollPane tapeScrollPane;
 	private JPanel northPanel;
@@ -47,23 +51,22 @@ public class TMView extends JFrame{
 	private JTextField inputField;
 	private JPanel startPanel;
 	private JPanel stepPanel;
-	private TMData data;
+	private Machine data;
 	private JList<Transition> listTransition;
 	private DefaultListModel<Transition> listModel;
 	private JPanel resetPanel;
-	private char[] inputTape;
 	
 	public TMView(){
 		super();
 		
-		data = new TMData(this);
+		data = Machine.getInstance();
 		this.setMinimumSize(new Dimension(600,400));
 		this.setResizable(false);
 		this.load();
 		this.init();
 		this.setTitle("Turing Machine");
 		this.setListeners();
-		
+		this.setLocation(200,200);
 		this.setVisible(true);
 	}
 	
@@ -71,19 +74,19 @@ public class TMView extends JFrame{
 		//Back
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
-		mainPanel.setBorder(new EmptyBorder(10,10,10,10));
+		mainPanel.setBorder(new EmptyBorder(5,5,5,5));
 		
 		//North
 		northPanel = new JPanel();
-		
-		tapePanel = new JPanel();
+		Border black = BorderFactory.createLineBorder(Color.black);
+		tapePanel = new Tape();
 		tapeScrollPane = new JScrollPane(tapePanel);
 		tapeScrollPane.setMinimumSize(new Dimension(570,50));
 		tapeScrollPane.setPreferredSize(new Dimension(570,50));
 		tapeScrollPane.setMaximumSize(new Dimension(570,50));
-		tapeLabel = new JLabel("Ruban");
-		tapePanel.add(tapeLabel);
-		
+		tapeScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		tapeScrollPane.setBorder(black);
+
 		northPanel.add(tapeScrollPane);
 		
 		//East
@@ -95,29 +98,36 @@ public class TMView extends JFrame{
 		
 		listTransition = new JList<Transition>();
 		listModel = new DefaultListModel<Transition>();
-		int size = data.getList().size();
-		for(int index=0; index<size; index++){
-		     listModel.addElement(data.getList().get(index));
+		/*int size = data.getStates().size();
+		/for(int index=0; index<size; index++){
+			//TODO:
+		    listModel.addElement(data.getStates().get(index));
 		}
 		listTransition.setModel(listModel);
-		
+		*/
 		eastScrollPane = new JScrollPane(listTransition);
-		eastScrollPane.setMinimumSize(new Dimension(190,260));
-		eastScrollPane.setPreferredSize(new Dimension(190,260));
-		eastScrollPane.setMaximumSize(new Dimension(190,260));
+		
+		eastScrollPane.setMinimumSize(new Dimension(190,270));
+		eastScrollPane.setPreferredSize(new Dimension(190,270));
+		eastScrollPane.setMaximumSize(new Dimension(190,270));
 		
 		//West
 		westPanel = new JPanel();
-		westPanel.setMinimumSize(new Dimension(300,250));
-		westPanel.setPreferredSize(new Dimension(300,250));
+		westPanel.setMinimumSize(new Dimension(380,250));
+		westPanel.setPreferredSize(new Dimension(380,250));
 		westPanel.setLayout(new BoxLayout(westPanel, BoxLayout.PAGE_AXIS));
 		westPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),"Menu",0,0,new Font("Arial", 0, 15)));
 		
 		butStart = new JButton("Démarrer");
+		butStart.setPreferredSize(new Dimension(130,25));
 		butStop = new JButton("Arrêter");
+		butStop.setPreferredSize(new Dimension(130,25));
 		butStep = new JButton("Etat par état");
+		butStep.setPreferredSize(new Dimension(130,25));
 		butStep2 = new JButton("Etape par étape");
+		butStep2.setPreferredSize(new Dimension(130,25));
 		butReset = new JButton("Remise à zéro");
+		butReset.setPreferredSize(new Dimension(130,25));
 		
 		inputLabel = new JLabel("Ruban initial");
 		JPanel leftAlign = new JPanel();
@@ -125,9 +135,9 @@ public class TMView extends JFrame{
 		leftAlign.add(inputLabel);
 		leftAlign.add(Box.createHorizontalGlue());
 		inputField = new JTextField();
-		inputField.setMinimumSize(new Dimension(300,30));
-		inputField.setPreferredSize(new Dimension(300,30));
-		inputField.setMaximumSize(new Dimension(300,30));
+		inputField.setMinimumSize(new Dimension(380,30));
+		inputField.setPreferredSize(new Dimension(380,30));
+		inputField.setMaximumSize(new Dimension(380,30));
 		
 		startPanel = new JPanel();
 		startPanel.setLayout(new BoxLayout(startPanel, BoxLayout.LINE_AXIS));
@@ -154,14 +164,16 @@ public class TMView extends JFrame{
 		resetPanel.add(butReset);
 		resetPanel.add(Box.createHorizontalGlue());
 		
+		westPanel.add(Box.createRigidArea(new Dimension(10,10)));
+		westPanel.add(leftAlign);
+		westPanel.add(inputField);
+		westPanel.add(Box.createRigidArea(new Dimension(20,20)));
 		westPanel.add(startPanel);
 		westPanel.add(Box.createRigidArea(new Dimension(20,20)));
 		westPanel.add(stepPanel);
 		westPanel.add(Box.createRigidArea(new Dimension(20,20)));
 		westPanel.add(resetPanel);
 		westPanel.add(Box.createVerticalGlue());
-		westPanel.add(leftAlign);
-		westPanel.add(inputField);
 		
 		eastPanel.add(eastScrollPane);
 		
@@ -172,23 +184,20 @@ public class TMView extends JFrame{
 	}
 	
 	private void load(){
-		data.loadTrans();
+		//TODO: Load data
 	}
-	
 	
 	private void setListeners(){
 		TMCtrl listener = new TMCtrl(this, data);
 		inputField.addKeyListener(listener);
 		butStart.addActionListener(listener);
+		butStep.addActionListener(listener);
+		butStep2.addActionListener(listener);
+		butReset.addActionListener(listener);
 		butStep.addMouseListener(listener);
+		butStep2.addMouseListener(listener);
 	}
 	
-	private void updateTape(){
-		
-	}
-	
-	
-
 	public JButton getButStart() {
 		return butStart;
 	}
@@ -199,6 +208,10 @@ public class TMView extends JFrame{
 
 	public JButton getButStep() {
 		return butStep;
+	}
+	
+	public JButton getButStep2() {
+		return butStep2;
 	}
 
 	public JButton getButReset() {
@@ -215,6 +228,9 @@ public class TMView extends JFrame{
 	public JLabel getTapeLabel() {
 		return tapeLabel;
 	}
-	
+
+	public Tape getTapePanel() {
+		return tapePanel;
+	}
 	
 }

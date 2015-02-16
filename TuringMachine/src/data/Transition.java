@@ -3,12 +3,12 @@ package data;
 public class Transition {
 
 	public String currentState;
-	public String redSymbole;
-	public String newSymbole;
+	public char redSymbole;
+	public char newSymbole;
 	public String direction;
 	public String nextState;
-	
-	public Transition(String current, String redS, String newS, String dir, String next){
+	 
+	public Transition(String current, char redS, char newS, String dir, String next){
 		currentState = current;
 		redSymbole = redS;
 		newSymbole = newS;
@@ -24,10 +24,10 @@ public class Transition {
 	public String getCurrentState() {
 		return currentState;
 	}
-	public String getRedSymbole() {
+	public char getRedSymbole() {
 		return redSymbole;
 	}
-	public String getNewSymbole() {
+	public char getNewSymbole() {
 		return newSymbole;
 	}
 	public String getDirection() {

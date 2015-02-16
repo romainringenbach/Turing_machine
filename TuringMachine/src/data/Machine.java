@@ -3,42 +3,57 @@ package data;
 import java.util.*;
 
 public class Machine {
+	
+	/**
+	 * Instance of Machine
+	 */
+	private static Machine instance;
 
 	/**
 	 * Set of states
 	 */
-	private HashSet<Transition> states;
+	private static ArrayList<Transition> trans;
 
 	/**
 	 * The machine alphabet as Set
 	 */
-	private HashSet<String> machine_alphabet;
+	private static ArrayList<Character> machine_alphabet;
 
 	/**
 	 * The tape alphabet as Set
-	 */		
-	private HashSet<String> tape_alphabet;
+	 */
+	private static ArrayList<Character> tape_alphabet;
+	
+	/**
+	 * The list of stopping states (for step by step)
+	 */
+	private static ArrayList<Transition> stopStates;
 
 	/**
-	 * The initial state
-	 * must be in states !!
+	 * The initial state must be in 'states' !!
 	 */
-	private String init_state;
+	private static String init_state;
 
 	/**
 	 * The accept state
 	 */
-	private String accept_state;
+	private static String accept_state;
 
 	/**
 	 * The reject state
 	 */	
-	private String reject_state;
+	private static String reject_state;
 
-	/**
-	 * The configuration file as String
-	 */
-	private String machine;
+	public static Machine getInstance(){
+		Machine ret = null;
+		TuringIO io = new TuringIO();
+		if(instance == null){
+			//TODO:Get all informations from TuringIO
+			machine_alphabet = io.loadMachineAlpha();
+		}
+		else ret = instance;
+		return ret;
+	}
 
 	/**
 	 *	CONSTRUCTOR 
@@ -50,106 +65,98 @@ public class Machine {
 	 *	@param init_state the initial state
 	 *	@param accept_state the accept state
 	 *	@param reject_state the reject state
-	 *	@param machine the configuration file as String
 	 */
-
-	public Machine(HashSet<String> states, HashSet<String> machine_alphabet, HashSet<String> tape_alphabet, HashMap<String,String> transitions, String init_state, String accept_state, String reject_state, String machine){
-
-		this.states = states;
+	private Machine(ArrayList<Transition> states, ArrayList<Character> machine_alphabet, ArrayList<Character> tape_alphabet,ArrayList<Transition> stopStates ,String init_state, String accept_state, String reject_state){
+		this.trans = states;
 		this.machine_alphabet = machine_alphabet;
 		this.tape_alphabet = tape_alphabet;
-		this.transitions = transitions;
+		this.stopStates = stopStates;
 		this.init_state = init_state;
 		this.accept_state = accept_state;
 		this.reject_state = reject_state;
-		this.machine = machine;		
-
 	} 
 
 	/**
 	 *	nextAction
-	 *
 	 *	for given state and symbol, return the new state, new symbol, and the direction, left or right.
 	 *
 	 *	@param state the current state
 	 *	@param symbol the current symbol
 	 *	@return the nextAction as HashMap with the following keys : "new_state" , "new_symbol" , "direction"
 	 */
-
-
-	public HashMap<String,String> nextAction(String state, String symbol){
-
-		HashMap<String,String> action = null;
-
-		String key = state + " " + symbol;
-
-		if (transitions.containsKey(key)) {
-			
-			String tmpAction = transitions.get(key);
-
-			String[] tmp = tmpAction.split("\\s");
-
-			action = new HashMap<String,String>();
-
-			action.put("new_state",tmp[0]);
-			action.put("new_symbol",tmp[1]);
-			action.put("direction",tmp[2]);
-
+	public Transition nextAction(char redChar, String state){
+		Transition ret = null;
+		Iterator<Transition> it = trans.iterator();
+		while(it.hasNext() && ret == null){
+			Transition index = it.next();
+			if(index.getCurrentState().equals(state) && index.getRedSymbole() == redChar){
+				ret = index;
+			}
 		}
-
+		if(ret == null) throw new NoSuchElementException("Etat "+state+" symbole "+redChar+" introuvable");
 		return ret;
 	}
 
 	/**
-	 *	isAccept 
+	 *	This method indicate if the current state is the accept state
 	 *
-	 *	this methode indicate if the current state is the accept state 	
-	 *
-	 *	@param state the current state
-	 *	@return 
-	 *
+	 *	@param state The current state
+	 *	@return Return true if the state is accepting, false else
 	 */	
-
 	public boolean isAccept(String state){
-
 		boolean ret = false;
-
 		if (accept_state.compareTo(state) == 0) {
 			ret = true;
 		}
-
 		return ret;
 	}
 
 	/**
-	 *	isReject 
-	 *
-	 *	this methode indicate if the current state is the reject state 	
-	 *
+	 *	This method indicate if the current state is the reject state 	
 	 *	@param state the current state
 	 *	@return 
-	 *
 	 */
-
 	public boolean isReject(String state){
-
 		boolean ret = false;
-
 		if (reject_state.equals(state)) {
 			ret = true;
 		}
-
+		return ret;
+	}
+	
+	public boolean isStop(String state){
+		boolean ret = false;
+		
+		
 		return ret;
 	}
 
-	/**
-	 *	Can be use for displaying the configuration file
-	 *
-	 *	@return the machine as String
-	 */
-
-	public String getMachine(){
-		return machine;
+	public ArrayList<Transition> getStates() {
+		return trans;
+	}
+	
+	public ArrayList<Character> getMachine_alphabet() {
+		return machine_alphabet;
+	}
+	
+	public ArrayList<Character> getTape_alphabet() {
+		return tape_alphabet;
+	}
+	
+	public ArrayList<Transition> getStopStates() {
+		return stopStates;
+	}
+	
+	public String getInit_state() {
+		return init_state;
+	}
+	
+	public String getAccept_state() {
+		return accept_state;
+	}
+	
+	public String getReject_state() {
+		return reject_state;
 	}
 
 }

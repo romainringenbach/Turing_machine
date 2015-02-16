@@ -1,0 +1,38 @@
+//Syntaxe :
+//<transistions>
+// *
+//<état courant> <symbole lu> <nouveau symbole> <direction r/l> <état suivant>
+// *
+//<fin transitions>
+
+<machine_alpha>
+0
+1
+</machine_alpha>
+
+<tape_alpha>
+0
+1
+</tape_alpha>
+
+<transitions>
+q0 0 _ r q0
+q0 1 _ r q0
+q0 _ _ r acc
+<fin transitions>
+
+<init_state>
+q0
+</init_state>
+
+<reject_state>
+
+</reject_state>
+
+<accept_state>
+acc
+</accept_state>
+
+<stop_states>
+
+</stop_states>
