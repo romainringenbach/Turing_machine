@@ -1,14 +1,5 @@
 package ctrl;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-
 import javax.swing.JOptionPane;
 
 import view.TMView;
@@ -16,7 +7,7 @@ import view.Tape;
 import data.Machine;
 import data.Transition;
 
-public class TMCtrl implements MouseListener, KeyListener, ActionListener, WindowListener{
+public class TMCtrl{
 
 	private TMView view;
 	private Machine data;
@@ -29,20 +20,20 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener, Windo
 	 * The state of the program in a given moment
 	 */
 	private String currentState;
+	private Character currentChar;
 	private Transition currentTrans;
 	/**
 	 * True if the machine is in accept or reject state
 	 */
-	private boolean ended;
+	public boolean ended;
 	/**
 	 * True if the machine is already started and not finished
 	 */
-	private boolean started;
+	public boolean started;
 	/**
 	 * True if the machine is running or paused
 	 */
-	private boolean running;
-	private Character currentChar;
+	public boolean running;
 	
 	public TMCtrl(TMView v, Machine d){
 		view = v;
@@ -60,7 +51,7 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener, Windo
 	/**
 	 * Launch the machine. Don't stop before end.
 	 */
-	private void startButton(){
+	public void startButton(){
 		running = true;
 		view.getButStart().setEnabled(false);
 		new Thread(){
@@ -81,7 +72,7 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener, Windo
 	/**
 	 * Do a single transition
 	 */
-	private void startStepButton(){
+	public void startStepButton(){
 		if(!ended){
 			TMCtrl.this.doTransition();
 		}
@@ -90,7 +81,7 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener, Windo
 	/**
 	 * Stop the running program
 	 */
-	private void stopButton(){
+	public void stopButton(){
 		running = false;
 		view.getButStart().setEnabled(true);
 	}
@@ -146,7 +137,7 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener, Windo
 	 * Setup the tape with the given string in the field and the first state
 	 * This field can't be empty
 	 */
-	private void init(){
+	public void init(){
 		String input = view.getInputField().getText();
 		if(!input.equals("")){
 			tape.initTape(input);
@@ -168,7 +159,7 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener, Windo
 	/**
 	 * Reset the machine at the begining, ready to start again.
 	 */
-	private void end(){
+	public void end(){
 		ended = true;
 		started = false;
 		running = false;
@@ -179,106 +170,8 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener, Windo
 	/* --------------- */
 	
 	
-	/* --- Listeners of view --- */
-
-		/* --- KeyListener --- */	
 	
-	public void keyPressed(KeyEvent e) {
-		if(e.getKeyCode() == KeyEvent.VK_ENTER && e.getSource()==view.getInputField()){
-			this.init();
-		}
+	public Tape getTape(){
+		return tape;
 	}
-	
-	/* --- Unused --- */
-	public void keyReleased(KeyEvent arg0) {;}
-	public void keyTyped(KeyEvent arg0) {;}
-	/* -------------- */
-	
-		/* ------------------- */	
-	
-		/* --- ActionListener --- */
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		Object src = e.getSource();
-		if(src == view.getButStart()){
-			if(!started) this.init();
-			this.startButton();
-		}
-		if(src == view.getButStep()){
-			if(!started) this.init();
-			this.startStepButton();
-		}
-		if(src == view.getButStep2()){
-			this.init();
-			//TODO:Lauch machine until stop state
-		}
-		if(src == view.getButStop()){
-			this.stopButton();
-		}
-		if(src == view.getButReset()){
-			view.getInputField().setText("");
-			tape.reset();
-			view.getTable().getSelectionModel().clearSelection();
-		}
-	}
-	
-		/* --------------------- */
-	
-		/* --- MouseListener --- */		
-	
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		Object src = e.getSource();
-		if(src == view.getButStart()){
-			view.getButStart().setToolTipText("Lance la machine jusqu'à la fin du programme ou un appui sur le bouton 'Arrêter'");
-		}
-		if(src == view.getButStop()){
-			view.getButStop().setToolTipText("Arrête la machine sur l'état actuel");
-		}
-		if(src == view.getButStep()){
-			view.getButStep().setToolTipText("Execute une seule transition");
-		}
-		if(src == view.getButStep2()){
-			view.getButStep2().setToolTipText("Lance la machine jusqu'à un état pause");
-		}
-	}
-	
-	/* --- Unused --- */
-	@Override
-	public void mouseClicked(MouseEvent e) {;}
-	@Override
-	public void mousePressed(MouseEvent e) {;}
-	@Override
-	public void mouseReleased(MouseEvent e) {;}
-	@Override
-	public void mouseExited(MouseEvent e) {;}
-	/* -------------- */
-	
-		/* --------------------- */
-	
-		/* --- WindowListener --- */
-
-	@Override
-	public void windowClosing(WindowEvent e) {
-		//Stop the thread when closing the window
-		this.end();
-	}
-	
-	/* --- Unused --- */
-	@Override
-	public void windowOpened(WindowEvent e) {;}
-	@Override
-	public void windowClosed(WindowEvent e) {;}
-	@Override
-	public void windowIconified(WindowEvent e) {;}
-	@Override
-	public void windowDeiconified(WindowEvent e) {;}
-	@Override
-	public void windowActivated(WindowEvent e) {;}
-	@Override
-	public void windowDeactivated(WindowEvent e) {;}
-	/* -------------- */
-	
-		/* ---------------------- */
 }

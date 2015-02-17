@@ -20,7 +20,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import ctrl.TMCtrl;
+import ctrl.TMListener;
 import data.Machine;
 import data.Transition;
 
@@ -95,9 +95,9 @@ public class TMView extends JFrame{
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 		table.setDefaultRenderer(Object.class, centerRenderer);
+		table.setFillsViewportHeight(true);
 		
 		eastScrollPane = new JScrollPane(table);
-		
 		eastScrollPane.setMinimumSize(new Dimension(240,290));
 		eastScrollPane.setPreferredSize(new Dimension(240,290));
 		eastScrollPane.setMaximumSize(new Dimension(240,290));
@@ -175,7 +175,7 @@ public class TMView extends JFrame{
 	}
 	
 	private void setListeners(){
-		TMCtrl listener = new TMCtrl(this, data);
+		TMListener listener = new TMListener(this);
 		inputField.addKeyListener(listener);
 		
 		butStart.addActionListener(listener);
