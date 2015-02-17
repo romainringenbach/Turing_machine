@@ -8,6 +8,7 @@ import data.Transition;
 
 public class TransitionTableModel extends AbstractTableModel{
 
+	private static final long serialVersionUID = 1L;
 	ArrayList<Transition> list;
 	
 	public TransitionTableModel(ArrayList<Transition> li) {
@@ -25,8 +26,8 @@ public class TransitionTableModel extends AbstractTableModel{
 	}
 	
 	@Override
-	public Class getColumnClass(int column) {
-        switch (column) {
+	public Class<?> getColumnClass(int columnIndex) {
+        switch (columnIndex) {
             case 0:
                 return String.class;
             case 1:
@@ -47,20 +48,15 @@ public class TransitionTableModel extends AbstractTableModel{
         String name = " / ";
         switch (column) {
             case 0:
-                name = "State";
-                break;
+            	return "State";
             case 1:
-                name = "Read Sym";
-                break;
+            	return "Read";
             case 2:
-                name = "New Sym";
-                break;
+            	return "New";
             case 3:
-                name = "Dir";
-                break;
+            	return "Dir";
             case 4:
-                name = "Next";
-                break;
+                return "Next";
         }
         return name;
     }

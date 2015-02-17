@@ -6,6 +6,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.JOptionPane;
 
@@ -14,7 +16,7 @@ import view.Tape;
 import data.Machine;
 import data.Transition;
 
-public class TMCtrl implements MouseListener, KeyListener, ActionListener{
+public class TMCtrl implements MouseListener, KeyListener, ActionListener, WindowListener{
 
 	private TMView view;
 	private Machine data;
@@ -33,9 +35,13 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener{
 	 */
 	private boolean ended;
 	/**
-	 * True if the program already started
+	 * True if the machine is already started and not finished
 	 */
 	private boolean started;
+	/**
+	 * True if the machine is running or paused
+	 */
+	private boolean running;
 	private Character currentChar;
 	
 	public TMCtrl(TMView v, Machine d){
@@ -44,6 +50,7 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener{
 		lect = 0;
 		ended = false;
 		started = false;
+		running = false;
 		tape = view.getTapePanel();
 		currentState = data.getInitState();
 	}
@@ -54,14 +61,16 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener{
 	 * Launch the machine. Don't stop before end.
 	 */
 	private void startButton(){
+		running = true;
 		view.getButStart().setEnabled(false);
 		new Thread(){
             public void run(){
-            	while(!ended){
+            	while(!ended && running){
         			TMCtrl.this.doTransition();
         			try {
-						Thread.sleep(800); //Can define a speed
+						Thread.sleep(300); //Can define a speed
 					} catch (InterruptedException e) {
+						e.printStackTrace();
 					}
         		}
             	return;
@@ -72,10 +81,18 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener{
 	/**
 	 * Do a single transition
 	 */
-	private void startStepTM(){
+	private void startStepButton(){
 		if(!ended){
 			TMCtrl.this.doTransition();
 		}
+	}
+	
+	/**
+	 * Stop the running program
+	 */
+	private void stopButton(){
+		running = false;
+		view.getButStart().setEnabled(true);
 	}
 	
 	
@@ -83,7 +100,7 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener{
 	 * Do the next transition of the machine
 	 */
 	private void doTransition(){
-		/* TODO:
+		/* 
 		 * Changer valeur 'lect'
 		 * Décolorer l'ancien emplacement de la tête
 		 * Colorer le nouvel emplacement de la tête 
@@ -124,8 +141,48 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener{
 	}
 	
 	
+
+	/**
+	 * Setup the tape with the given string in the field and the first state
+	 * This field can't be empty
+	 */
+	private void init(){
+		String input = view.getInputField().getText();
+		if(!input.equals("")){
+			tape.initTape(input);
+			lect = 0;
+			started = true;
+			running = true;
+			ended = false;
+			currentState = data.getInitState();
+			currentChar = tape.getChar(lect);
+			currentTrans = data.getTransitionFromSym(currentChar, currentState);
+			
+			view.getTable().setRowSelectionInterval(data.getTrans().indexOf(currentTrans), data.getTrans().indexOf(currentTrans));
+		}
+		else 
+			JOptionPane.showMessageDialog(view, "Veuillez inscrire dans le champ ci-dessous le ruban initial.");
+
+	}
+	
+	/**
+	 * Reset the machine at the begining, ready to start again.
+	 */
+	private void end(){
+		ended = true;
+		started = false;
+		running = false;
+		view.getButStart().setEnabled(true);
+		view.getTable().getSelectionModel().clearSelection();
+	}
+	
+	/* --------------- */
+	
+	
 	/* --- Listeners of view --- */
 
+		/* --- KeyListener --- */	
+	
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_ENTER && e.getSource()==view.getInputField()){
 			this.init();
@@ -137,6 +194,10 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener{
 	public void keyTyped(KeyEvent arg0) {;}
 	/* -------------- */
 	
+		/* ------------------- */	
+	
+		/* --- ActionListener --- */
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object src = e.getSource();
@@ -146,11 +207,14 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener{
 		}
 		if(src == view.getButStep()){
 			if(!started) this.init();
-			this.startStepTM();
+			this.startStepButton();
 		}
 		if(src == view.getButStep2()){
 			this.init();
 			//TODO:Lauch machine until stop state
+		}
+		if(src == view.getButStop()){
+			this.stopButton();
 		}
 		if(src == view.getButReset()){
 			view.getInputField().setText("");
@@ -159,9 +223,19 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener{
 		}
 	}
 	
+		/* --------------------- */
+	
+		/* --- MouseListener --- */		
+	
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		Object src = e.getSource();
+		if(src == view.getButStart()){
+			view.getButStart().setToolTipText("Lance la machine jusqu'à la fin du programme ou un appui sur le bouton 'Arrêter'");
+		}
+		if(src == view.getButStop()){
+			view.getButStop().setToolTipText("Arrête la machine sur l'état actuel");
+		}
 		if(src == view.getButStep()){
 			view.getButStep().setToolTipText("Execute une seule transition");
 		}
@@ -181,38 +255,30 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener{
 	public void mouseExited(MouseEvent e) {;}
 	/* -------------- */
 	
+		/* --------------------- */
 	
-	/**
-	 * Setup the tape with the given string in the field and the first state
-	 * This field can't be empty
-	 */
-	private void init(){
-		/* --- IHM --- */
-		String input = view.getInputField().getText();
-		if(!input.equals("")) 
-			tape.initTape(input);
-		else 
-			JOptionPane.showMessageDialog(view, "Veuillez inscrire dans le champ ci-dessous le ruban initial.");
+		/* --- WindowListener --- */
 
-		/* --- Data --- */
-		lect = 0;
-		started = true;
-		ended = false;
-		currentState = data.getInitState();
-		currentChar = tape.getChar(lect);
-		currentTrans = data.getTransitionFromSym(currentChar, currentState);
-		
-		view.getTable().setRowSelectionInterval(data.getTrans().indexOf(currentTrans), data.getTrans().indexOf(currentTrans));
+	@Override
+	public void windowClosing(WindowEvent e) {
+		//Stop the thread when closing the window
+		this.end();
 	}
 	
-	/**
-	 * Reset the machine at the begining, ready to start again.
-	 */
-	private void end(){
-		ended = true;
-		started = false;
-		view.getButStart().setEnabled(true);
-		view.getTable().getSelectionModel().clearSelection();
-	}
+	/* --- Unused --- */
+	@Override
+	public void windowOpened(WindowEvent e) {;}
+	@Override
+	public void windowClosed(WindowEvent e) {;}
+	@Override
+	public void windowIconified(WindowEvent e) {;}
+	@Override
+	public void windowDeiconified(WindowEvent e) {;}
+	@Override
+	public void windowActivated(WindowEvent e) {;}
+	@Override
+	public void windowDeactivated(WindowEvent e) {;}
+	/* -------------- */
 	
+		/* ---------------------- */
 }

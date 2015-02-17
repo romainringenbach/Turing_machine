@@ -3,7 +3,6 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -12,7 +11,6 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -38,8 +36,6 @@ public class TMView extends JFrame{
 	private Tape tapePanel;
 	private JLabel tapeLabel;
 	private JScrollPane tapeScrollPane;
-	private JPanel northPanel;
-	private JPanel eastPanel;
 	private JScrollPane eastScrollPane;
 	private JPanel westPanel;
 	private JButton butStart;
@@ -52,7 +48,6 @@ public class TMView extends JFrame{
 	private JPanel startPanel;
 	private JPanel stepPanel;
 	private Machine data;
-	private JList<Transition> listTransition;
 	private DefaultListModel<Transition> listModel;
 	private JPanel resetPanel;
 	private TransitionTableModel model;
@@ -62,42 +57,34 @@ public class TMView extends JFrame{
 		super();
 		
 		data = Machine.getInstance();
-		this.setMinimumSize(new Dimension(600,400));
 		this.setResizable(false);
 		this.init();
 		this.setTitle("Turing Machine");
 		this.setListeners();
+		this.pack();
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 	}
 	
 	private void init(){
+		//Referrence Size : 600 x 400
+		
 		//Back
 		mainPanel = new JPanel();
-		mainPanel.setLayout(new BorderLayout());
-		mainPanel.setBorder(new EmptyBorder(5,5,5,5));
+		mainPanel.setLayout(new BorderLayout(5,5));
+		mainPanel.setBorder(new EmptyBorder(10,10,10,10));
 		
 		//North
-		northPanel = new JPanel();
-		Border black = BorderFactory.createLineBorder(Color.black);
 		tapePanel = new Tape();
 		tapeScrollPane = new JScrollPane(tapePanel);
-		tapeScrollPane.setMinimumSize(new Dimension(570,50));
-		tapeScrollPane.setPreferredSize(new Dimension(570,50));
-		tapeScrollPane.setMaximumSize(new Dimension(570,50));
+		tapeScrollPane.setMinimumSize(new Dimension(575,50));
+		tapeScrollPane.setPreferredSize(new Dimension(575,50));
+		tapeScrollPane.setMaximumSize(new Dimension(575,50));
 		tapeScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		Border black = BorderFactory.createLineBorder(Color.black);
 		tapeScrollPane.setBorder(black);
-
-		northPanel.add(tapeScrollPane);
 		
 		//East
-		eastPanel = new JPanel();
-		eastPanel.setMinimumSize(new Dimension(250,250));
-		eastPanel.setPreferredSize(new Dimension(250,250));
-		eastPanel.setMaximumSize(new Dimension(250,250));
-		//eastPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),"List",0,0,new Font("Arial", 0, 15)));
-		
-		
 		model = new TransitionTableModel(data.getTrans());
 		table = new JTable(model);
 		table.setShowGrid(false);
@@ -108,14 +95,6 @@ public class TMView extends JFrame{
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 		table.setDefaultRenderer(Object.class, centerRenderer);
-		
-		/*listTransition = new JList<Transition>();
-		listModel = new DefaultListModel<Transition>();
-		int size = data.getTrans().size();
-		for(int index=0; index<size; index++){
-		    listModel.addElement(data.getTrans().get(index));
-		}
-		listTransition.setModel(listModel);*/
 		
 		eastScrollPane = new JScrollPane(table);
 		
@@ -128,18 +107,18 @@ public class TMView extends JFrame{
 		westPanel.setMinimumSize(new Dimension(330,250));
 		westPanel.setPreferredSize(new Dimension(330,250));
 		westPanel.setLayout(new BoxLayout(westPanel, BoxLayout.PAGE_AXIS));
-		westPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),"Menu",0,0,new Font("Arial", 0, 15)));
+		westPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		
 		butStart = new JButton("Démarrer");
-		butStart.setPreferredSize(new Dimension(130,25));
+		butStart.setPreferredSize(new Dimension(125,25));
 		butStop = new JButton("Arrêter");
-		butStop.setPreferredSize(new Dimension(130,25));
+		butStop.setPreferredSize(new Dimension(125,25));
 		butStep = new JButton("Etat par état");
-		butStep.setPreferredSize(new Dimension(130,25));
+		butStep.setPreferredSize(new Dimension(125,25));
 		butStep2 = new JButton("Etape par étape");
-		butStep2.setPreferredSize(new Dimension(130,25));
+		butStep2.setPreferredSize(new Dimension(125,25));
 		butReset = new JButton("Remise à zéro");
-		butReset.setPreferredSize(new Dimension(130,25));
+		butReset.setPreferredSize(new Dimension(125,25));
 		
 		inputLabel = new JLabel("Ruban initial");
 		JPanel leftAlign = new JPanel();
@@ -160,18 +139,19 @@ public class TMView extends JFrame{
 		resetPanel = new JPanel();
 		resetPanel.setLayout(new BoxLayout(resetPanel, BoxLayout.LINE_AXIS));
 		
+		//First lign of button (Start + Stop)
 		startPanel.add(Box.createHorizontalGlue());
 		startPanel.add(butStart);
-		startPanel.add(Box.createHorizontalGlue());
+		startPanel.add(Box.createRigidArea(new Dimension(10,10)));
 		startPanel.add(butStop);
 		startPanel.add(Box.createHorizontalGlue());
-		
+		//Second lign of button(Step + Step2)
 		stepPanel.add(Box.createHorizontalGlue());
 		stepPanel.add(butStep);
-		stepPanel.add(Box.createHorizontalGlue());
+		stepPanel.add(Box.createRigidArea(new Dimension(10,10)));
 		stepPanel.add(butStep2);
 		stepPanel.add(Box.createHorizontalGlue());
-		
+		//Third lign of button (Reset)
 		resetPanel.add(Box.createHorizontalGlue());
 		resetPanel.add(butReset);
 		resetPanel.add(Box.createHorizontalGlue());
@@ -179,31 +159,37 @@ public class TMView extends JFrame{
 		westPanel.add(Box.createRigidArea(new Dimension(10,10)));
 		westPanel.add(leftAlign);
 		westPanel.add(inputField);
-		westPanel.add(Box.createRigidArea(new Dimension(20,20)));
+		westPanel.add(Box.createRigidArea(new Dimension(10,10)));
 		westPanel.add(startPanel);
-		westPanel.add(Box.createRigidArea(new Dimension(20,20)));
+		westPanel.add(Box.createRigidArea(new Dimension(10,10)));
 		westPanel.add(stepPanel);
-		westPanel.add(Box.createRigidArea(new Dimension(20,20)));
+		westPanel.add(Box.createRigidArea(new Dimension(10,10)));
 		westPanel.add(resetPanel);
 		westPanel.add(Box.createVerticalGlue());
 		
-		eastPanel.add(eastScrollPane);
 		
 		mainPanel.add(westPanel, BorderLayout.WEST);
-		mainPanel.add(eastPanel, BorderLayout.EAST);
-		mainPanel.add(northPanel,BorderLayout.NORTH);
+		mainPanel.add(eastScrollPane, BorderLayout.EAST);
+		mainPanel.add(tapeScrollPane,BorderLayout.NORTH);
 		this.add(mainPanel);
 	}
 	
 	private void setListeners(){
 		TMCtrl listener = new TMCtrl(this, data);
 		inputField.addKeyListener(listener);
+		
 		butStart.addActionListener(listener);
+		butStop.addActionListener(listener);
 		butStep.addActionListener(listener);
 		butStep2.addActionListener(listener);
 		butReset.addActionListener(listener);
+		
+		butStart.addMouseListener(listener);
+		butStop.addMouseListener(listener);
 		butStep.addMouseListener(listener);
 		butStep2.addMouseListener(listener);
+		
+		this.addWindowListener(listener);
 	}
 	
 	
