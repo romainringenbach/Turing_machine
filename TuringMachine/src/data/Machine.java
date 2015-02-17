@@ -83,7 +83,7 @@ public class Machine {
 	 *	@param state the current state
 	 *	@return Return the next Transition object to run
 	 */
-	public Transition nextAction(Character redChar, String state){
+	public Transition getTransitionFromSym(Character redChar, String state){
 		Transition ret = null;
 		Iterator<Transition> it = trans.iterator();
 		while(it.hasNext() && ret == null){

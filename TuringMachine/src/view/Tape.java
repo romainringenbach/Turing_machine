@@ -50,15 +50,16 @@ public class Tape extends JPanel {
 		this.repaint();
 	}
 	
+	public void setDefaultColor(int pos){
+		JLabel l = labelList.get(pos);
+		l.setBackground(UIManager.getColor ("Panel.background"));
+	}
+	
 	public void setHead(int pos){
 		JLabel l = labelList.get(pos);
-		if(l.getBackground() == Color.yellow){
-			l.setBackground(UIManager.getColor ("Panel.background"));
-		}
-		else{
-			l.setBackground(Color.yellow);
-		}
+		l.setBackground(Color.yellow);
 	}
+	
 	
 	public Character getChar(int pos){
 		JLabel l = labelList.get(pos);
@@ -70,6 +71,8 @@ public class Tape extends JPanel {
 		l.setText(c.toString());
 	}
 	
+	
+	
 	public void reset(){
 		symList = new ArrayList<Character>();
 		labelList = new ArrayList<JLabel>();
@@ -80,6 +83,7 @@ public class Tape extends JPanel {
 	private void setupEmptyTape(){
 		for(int j=0;j<50;j++){
 			JLabel empty = new JLabel("_");
+			empty.setOpaque(true);
 			empty.setPreferredSize(new Dimension(30,30));
 			empty.setBorder(BorderFactory.createMatteBorder(0,0,0,1,TAPE_BORDER_COLOR));
 			empty.setHorizontalAlignment(JLabel.CENTER);

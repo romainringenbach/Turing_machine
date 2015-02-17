@@ -18,10 +18,25 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener{
 
 	private TMView view;
 	private Machine data;
-	private int lect;
-	private String currentState;
 	private Tape tape;
-	private boolean ended,started;
+	/**
+	 * Indicates the position of the reading head on the tape
+	 */
+	private int lect;
+	/**
+	 * The state of the program in a given moment
+	 */
+	private String currentState;
+	private Transition currentTrans;
+	/**
+	 * True if the machine is in accept or reject state
+	 */
+	private boolean ended;
+	/**
+	 * True if the program already started
+	 */
+	private boolean started;
+	private Character currentChar;
 	
 	public TMCtrl(TMView v, Machine d){
 		view = v;
@@ -29,14 +44,17 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener{
 		lect = 0;
 		ended = false;
 		started = false;
-		currentState = data.getInitState();
 		tape = view.getTapePanel();
+		currentState = data.getInitState();
 	}
 	
 	/* --- Actions --- */
 	
+	/**
+	 * Launch the machine. Don't stop before end.
+	 */
 	private void startButton(){
-		ended = false;
+		view.getButStart().setEnabled(false);
 		new Thread(){
             public void run(){
             	while(!ended){
@@ -46,42 +64,62 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener{
 					} catch (InterruptedException e) {
 					}
         		}
+            	return;
             }
         }.start();
 	}
 	
-	
+	/**
+	 * Do a single transition
+	 */
 	private void startStepTM(){
-		TMCtrl.this.doTransition();
+		if(!ended){
+			TMCtrl.this.doTransition();
+		}
 	}
 	
+	
+	/**
+	 * Do the next transition of the machine
+	 */
 	private void doTransition(){
-		Character currentChar = tape.getChar(lect);
-		Transition t = data.nextAction(currentChar, currentState);
-		//Overwrite the new symbole
-		tape.setChar(lect, t.getNewSymbole());
-		//Set the direction of the head
-		if(t.getDirection().equals("r")){
-			tape.setHead(lect);
-			lect++;
-		}
-		else if(lect != 0){
-			tape.setHead(lect);
-			lect--;
-		}
-		tape.setHead(lect);
-		view.getTable().setRowSelectionInterval(data.getTrans().indexOf(t), data.getTrans().indexOf(t));
+		/* TODO:
+		 * Changer valeur 'lect'
+		 * Décolorer l'ancien emplacement de la tête
+		 * Colorer le nouvel emplacement de la tête 
+		 * Sélectionner la transition suivante
+		 * Ecraser caractère de la transition
+		 */
 		
-		if(data.isAccept(t.getNextState())){
-			this.end();
+		currentChar = tape.getChar(lect);
+		currentTrans = data.getTransitionFromSym(currentChar, currentState);
+		
+		tape.setDefaultColor(lect);
+		//Overwrite the new symbole
+		tape.setChar(lect, currentTrans.getNewSymbole());
+		//Set the direction of the head
+		if(currentTrans.getDirection().equals(">")) 
+			lect++;
+		else if(lect > 0)
+			lect--;
+		//Color the head
+		tape.setHead(lect);
+		
+		
+		if(data.isAccept(currentTrans.getNextState())){
 			JOptionPane.showMessageDialog(view, "Etat acceptant !");
+			this.end();
 		}
-		else if(data.isReject(t.getNextState())){
+		else if(data.isReject(currentTrans.getNextState())){
 			JOptionPane.showMessageDialog(view, "Etat rejetant !");
+			this.end();
 		}
 		else{
 			//Set the new state
-			currentState = t.getNextState();
+			currentChar = tape.getChar(lect);
+			currentState = currentTrans.getNextState();
+			currentTrans = data.getTransitionFromSym(currentChar, currentState);
+			view.getTable().setRowSelectionInterval(data.getTrans().indexOf(currentTrans), data.getTrans().indexOf(currentTrans));
 		}
 	}
 	
@@ -105,7 +143,6 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener{
 		if(src == view.getButStart()){
 			if(!started) this.init();
 			this.startButton();
-			//TODO:Lauch machine loop
 		}
 		if(src == view.getButStep()){
 			if(!started) this.init();
@@ -118,7 +155,7 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener{
 		if(src == view.getButReset()){
 			view.getInputField().setText("");
 			tape.reset();
-			//TODO:Reset all
+			view.getTable().getSelectionModel().clearSelection();
 		}
 	}
 	
@@ -150,21 +187,32 @@ public class TMCtrl implements MouseListener, KeyListener, ActionListener{
 	 * This field can't be empty
 	 */
 	private void init(){
-		started = true;
-		ended = false;
-		currentState = data.getInitState();
-
+		/* --- IHM --- */
 		String input = view.getInputField().getText();
 		if(!input.equals("")) 
 			tape.initTape(input);
 		else 
 			JOptionPane.showMessageDialog(view, "Veuillez inscrire dans le champ ci-dessous le ruban initial.");
+
+		/* --- Data --- */
+		lect = 0;
+		started = true;
+		ended = false;
+		currentState = data.getInitState();
+		currentChar = tape.getChar(lect);
+		currentTrans = data.getTransitionFromSym(currentChar, currentState);
+		
+		view.getTable().setRowSelectionInterval(data.getTrans().indexOf(currentTrans), data.getTrans().indexOf(currentTrans));
 	}
 	
+	/**
+	 * Reset the machine at the begining, ready to start again.
+	 */
 	private void end(){
-		lect = 0;
 		ended = true;
 		started = false;
+		view.getButStart().setEnabled(true);
+		view.getTable().getSelectionModel().clearSelection();
 	}
 	
 }

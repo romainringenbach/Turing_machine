@@ -64,11 +64,10 @@ public class TMView extends JFrame{
 		data = Machine.getInstance();
 		this.setMinimumSize(new Dimension(600,400));
 		this.setResizable(false);
-		this.load();
 		this.init();
 		this.setTitle("Turing Machine");
 		this.setListeners();
-		this.setLocation(200,200);
+		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 	}
 	
@@ -117,6 +116,7 @@ public class TMView extends JFrame{
 		    listModel.addElement(data.getTrans().get(index));
 		}
 		listTransition.setModel(listModel);*/
+		
 		eastScrollPane = new JScrollPane(table);
 		
 		eastScrollPane.setMinimumSize(new Dimension(240,290));
@@ -195,10 +195,6 @@ public class TMView extends JFrame{
 		this.add(mainPanel);
 	}
 	
-	private void load(){
-		//TODO: Load data
-	}
-	
 	private void setListeners(){
 		TMCtrl listener = new TMCtrl(this, data);
 		inputField.addKeyListener(listener);
@@ -209,6 +205,9 @@ public class TMView extends JFrame{
 		butStep.addMouseListener(listener);
 		butStep2.addMouseListener(listener);
 	}
+	
+	
+	
 	
 	public JButton getButStart() {
 		return butStart;
