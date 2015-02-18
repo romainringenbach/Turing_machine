@@ -63,7 +63,8 @@ public class TMCtrl{
 	/**
 	 * Launch the machine. Don't stop before end.
 	 */
-	public void startButton(){
+	public void startButton(boolean st){
+		stop = st;
 		if(ready){
 			started = true;
 			running = true;
@@ -106,8 +107,7 @@ public class TMCtrl{
 	 * Launch the machine until a stop state
 	 */
 	public void step2Button(){
-		stop = true;
-		this.startButton();
+		this.startButton(true);
 	}
 	
 	public void resetButton(){

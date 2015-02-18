@@ -57,7 +57,7 @@ public class TMListener implements ActionListener, KeyListener{
 			if(!ctrl.started){
 				ctrl.init();
 			}
-			ctrl.startButton();
+			ctrl.startButton(false);
 		}
 		if(src == view.getButStep()){
 			if(!ctrl.started) ctrl.init();
