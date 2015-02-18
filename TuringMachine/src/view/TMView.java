@@ -7,8 +7,9 @@ import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
+import javax.swing.InputVerifier;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,10 +23,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import ctrl.TMListener;
 import data.Machine;
-import data.Transition;
 
 public class TMView extends JFrame{
-
 
 	public static void main(String[] args) {
 		new TMView();
@@ -33,29 +32,32 @@ public class TMView extends JFrame{
 	
 	private static final long serialVersionUID = 1L;
 	private JPanel mainPanel;
-	private Tape tapePanel;
+	private JPanel westPanel;
+	private JPanel startPanel;
+	private JPanel stepPanel;
+	private JPanel resetPanel;
+	private JPanel configPanel;
 	private JLabel tapeLabel;
+	private JLabel inputLabel;
+	private JLabel alphaLabel;
+	private JLabel stateLabel;
 	private JScrollPane tapeScrollPane;
 	private JScrollPane eastScrollPane;
-	private JPanel westPanel;
 	private JButton butStart;
 	private JButton butStop;
 	private JButton butStep;
-	private JButton butReset;
 	private JButton butStep2;
-	private JLabel inputLabel;
+	private JButton butReset;
 	private JTextField inputField;
-	private JPanel startPanel;
-	private JPanel stepPanel;
-	private Machine data;
-	private DefaultListModel<Transition> listModel;
-	private JPanel resetPanel;
-	private TransitionTableModel model;
+	private JTextField configField;
 	private JTable table;
+	private TransitionTableModel model;
+	private Tape tapePanel;
+
+	private Machine data;
 	
 	public TMView(){
 		super();
-		
 		data = Machine.getInstance();
 		this.setResizable(false);
 		this.init();
@@ -63,6 +65,7 @@ public class TMView extends JFrame{
 		this.setListeners();
 		this.pack();
 		this.setLocationRelativeTo(null);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
 	}
 	
@@ -109,6 +112,18 @@ public class TMView extends JFrame{
 		westPanel.setLayout(new BoxLayout(westPanel, BoxLayout.PAGE_AXIS));
 		westPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		
+		inputLabel = new JLabel("Ruban initial");
+		JPanel leftAlign = new JPanel();
+		leftAlign.setLayout(new BoxLayout(leftAlign,BoxLayout.LINE_AXIS));
+		leftAlign.add(Box.createRigidArea(new Dimension(8,8)));
+		leftAlign.add(inputLabel);
+		leftAlign.add(Box.createHorizontalGlue());
+		inputField = new JTextField();
+		inputField.setMinimumSize(new Dimension(310,30));
+		inputField.setPreferredSize(new Dimension(310,30));
+		inputField.setMaximumSize(new Dimension(310,30));
+		//inputField.setInputVerifier(new AlphaVerifier());
+
 		butStart = new JButton("Démarrer");
 		butStart.setPreferredSize(new Dimension(125,25));
 		butStop = new JButton("Arrêter");
@@ -120,15 +135,27 @@ public class TMView extends JFrame{
 		butReset = new JButton("Remise à zéro");
 		butReset.setPreferredSize(new Dimension(125,25));
 		
-		inputLabel = new JLabel("Ruban initial");
-		JPanel leftAlign = new JPanel();
-		leftAlign.setLayout(new BoxLayout(leftAlign,BoxLayout.LINE_AXIS));
-		leftAlign.add(inputLabel);
-		leftAlign.add(Box.createHorizontalGlue());
-		inputField = new JTextField();
-		inputField.setMinimumSize(new Dimension(380,30));
-		inputField.setPreferredSize(new Dimension(380,30));
-		inputField.setMaximumSize(new Dimension(380,30));
+		alphaLabel = new JLabel();
+		alphaLabel.setText("Alphabet : "+data.getTapeAlpha());
+		JPanel leftAlign2 = new JPanel();
+		leftAlign2.setLayout(new BoxLayout(leftAlign2,BoxLayout.LINE_AXIS));
+		leftAlign2.add(Box.createRigidArea(new Dimension(8,8)));
+		leftAlign2.add(alphaLabel);
+		leftAlign2.add(Box.createHorizontalGlue());
+		
+		configField = new JTextField();
+		configField.setMinimumSize(new Dimension(250,30));
+		configField.setPreferredSize(new Dimension(250,30));
+		configField.setMaximumSize(new Dimension(250,30));
+		configField.setEnabled(false);
+		stateLabel = new JLabel("State");
+		stateLabel.setMinimumSize(new Dimension(40,30));
+		stateLabel.setPreferredSize(new Dimension(40,30));
+		stateLabel.setMaximumSize(new Dimension(40,30));
+		stateLabel.setOpaque(true);
+		stateLabel.setBackground(Color.white);
+		stateLabel.setHorizontalAlignment(JLabel.CENTER);
+		stateLabel.setBorder(BorderFactory.createMatteBorder(1,1,1,1, new Color(0xB8CFE5)));
 		
 		startPanel = new JPanel();
 		startPanel.setLayout(new BoxLayout(startPanel, BoxLayout.LINE_AXIS));
@@ -138,6 +165,9 @@ public class TMView extends JFrame{
 		
 		resetPanel = new JPanel();
 		resetPanel.setLayout(new BoxLayout(resetPanel, BoxLayout.LINE_AXIS));
+		
+		configPanel = new JPanel();
+		configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.LINE_AXIS));
 		
 		//First lign of button (Start + Stop)
 		startPanel.add(Box.createHorizontalGlue());
@@ -155,18 +185,27 @@ public class TMView extends JFrame{
 		resetPanel.add(Box.createHorizontalGlue());
 		resetPanel.add(butReset);
 		resetPanel.add(Box.createHorizontalGlue());
+		//Forth lign with current state and configuration
+		configPanel.add(Box.createHorizontalGlue());
+		configPanel.add(configField);
+		configPanel.add(Box.createHorizontalGlue());
+		configPanel.add(stateLabel);
+		configPanel.add(Box.createHorizontalGlue());
 		
 		westPanel.add(Box.createRigidArea(new Dimension(10,10)));
 		westPanel.add(leftAlign);
 		westPanel.add(inputField);
 		westPanel.add(Box.createRigidArea(new Dimension(10,10)));
+		westPanel.add(leftAlign2);
+		westPanel.add(Box.createRigidArea(new Dimension(30,30)));
 		westPanel.add(startPanel);
 		westPanel.add(Box.createRigidArea(new Dimension(10,10)));
 		westPanel.add(stepPanel);
 		westPanel.add(Box.createRigidArea(new Dimension(10,10)));
 		westPanel.add(resetPanel);
-		westPanel.add(Box.createVerticalGlue());
-		
+		westPanel.add(Box.createVerticalGlue());//RigidArea(new Dimension(10,10)));
+		westPanel.add(configPanel);
+		westPanel.add(Box.createRigidArea(new Dimension(10,10)));
 		
 		mainPanel.add(westPanel, BorderLayout.WEST);
 		mainPanel.add(eastScrollPane, BorderLayout.EAST);
@@ -184,16 +223,14 @@ public class TMView extends JFrame{
 		butStep2.addActionListener(listener);
 		butReset.addActionListener(listener);
 		
-		butStart.addMouseListener(listener);
-		butStop.addMouseListener(listener);
-		butStep.addMouseListener(listener);
-		butStep2.addMouseListener(listener);
-		
-		this.addWindowListener(listener);
+		inputField.setToolTipText("Appuyer sur 'ENTER' pour initialiser le ruban");
+		butStart.setToolTipText("Lance la machine jusqu'à la fin du programme ou un appui sur le bouton 'Arrêter'");
+		butStop.setToolTipText("Arrête la machine sur l'état actuel");
+		butStep.setToolTipText("Execute une seule transition");
+		butStep2.setToolTipText("Lance la machine jusqu'à un état pause");
 	}
-	
-	
-	
+
+	/* --- Getters ---*/
 	
 	public JButton getButStart() {
 		return butStart;
@@ -214,11 +251,11 @@ public class TMView extends JFrame{
 	public JButton getButReset() {
 		return butReset;
 	}
-
-	public DefaultListModel<Transition> getListModel() {
-		return listModel;
+	
+	public JScrollPane getScrollTape(){
+		return tapeScrollPane;
 	}
-
+	
 	public JTable getTable() {
 		return table;
 	}
@@ -226,6 +263,15 @@ public class TMView extends JFrame{
 	public JTextField getInputField() {
 		return inputField;
 	}
+	
+	public JLabel getStateLabel() {
+		return stateLabel;
+	}
+	
+	public void setStateLabel(String text) {
+		stateLabel.setText(text);
+	}
+	
 	public JLabel getTapeLabel() {
 		return tapeLabel;
 	}
@@ -233,5 +279,16 @@ public class TMView extends JFrame{
 	public Tape getTapePanel() {
 		return tapePanel;
 	}
+	
+	
+	
+	private class AlphaVerifier extends InputVerifier{
+        public boolean verify(JComponent input) {
+              JTextField tf = (JTextField) input;
+              String s = tf.getText();
+              return data.getTapeAlpha().contains(s.charAt(s.length()-1));
+        }
+    }
+	
 	
 }

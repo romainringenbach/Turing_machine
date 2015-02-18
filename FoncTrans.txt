@@ -5,6 +5,7 @@
 <machine_alpha>
 0
 1
+_
 </machine_alpha>
 
 <tape_alpha>
@@ -27,7 +28,7 @@ acc
 </accept_state>
 
 <reject_state>
-
+rej
 </reject_state>
 
 <stop_states>
