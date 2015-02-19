@@ -84,9 +84,9 @@ public class TMView extends JFrame{
 		//North
 		tapePanel = new Tape();
 		tapeScrollPane = new JScrollPane(tapePanel);
-		tapeScrollPane.setMinimumSize(new Dimension(575,50));
-		tapeScrollPane.setPreferredSize(new Dimension(575,50));
-		tapeScrollPane.setMaximumSize(new Dimension(575,50));
+		tapeScrollPane.setMinimumSize(new Dimension(575,70));
+		tapeScrollPane.setPreferredSize(new Dimension(575,70));
+		tapeScrollPane.setMaximumSize(new Dimension(575,70));
 		tapeScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		Border black = BorderFactory.createLineBorder(Color.black);
 		tapeScrollPane.setBorder(black);
