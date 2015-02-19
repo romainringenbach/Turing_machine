@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
@@ -49,7 +50,7 @@ public class TMView extends JFrame{
 	private JButton butStep2;
 	private JButton butReset;
 	private JTextField inputField;
-	private JTextField configField;
+	private JTextPane configField;
 	private JTable table;
 	private TransitionTableModel model;
 	private Tape tapePanel;
@@ -122,7 +123,6 @@ public class TMView extends JFrame{
 		inputField.setMinimumSize(new Dimension(310,30));
 		inputField.setPreferredSize(new Dimension(310,30));
 		inputField.setMaximumSize(new Dimension(310,30));
-		//inputField.setInputVerifier(new AlphaVerifier());
 
 		butStart = new JButton("Démarrer");
 		butStart.setPreferredSize(new Dimension(125,25));
@@ -143,11 +143,12 @@ public class TMView extends JFrame{
 		leftAlign2.add(alphaLabel);
 		leftAlign2.add(Box.createHorizontalGlue());
 		
-		configField = new JTextField();
+		configField = new JTextPane();
+		configField.setContentType("text/html");
 		configField.setMinimumSize(new Dimension(250,30));
 		configField.setPreferredSize(new Dimension(250,30));
 		configField.setMaximumSize(new Dimension(250,30));
-		configField.setEnabled(false);
+		configField.setBorder(BorderFactory.createMatteBorder(1,1,1,1, new Color(0xB8CFE5)));
 		stateLabel = new JLabel("State");
 		stateLabel.setMinimumSize(new Dimension(40,30));
 		stateLabel.setPreferredSize(new Dimension(40,30));
@@ -272,6 +273,14 @@ public class TMView extends JFrame{
 		stateLabel.setText(text);
 	}
 	
+	public JTextPane getConfigField(){
+		return configField;
+	}
+	
+	public void setConfigField(String s){
+		configField.setText(s);
+	}
+	
 	public JLabel getTapeLabel() {
 		return tapeLabel;
 	}
@@ -279,16 +288,6 @@ public class TMView extends JFrame{
 	public Tape getTapePanel() {
 		return tapePanel;
 	}
-	
-	
-	
-	private class AlphaVerifier extends InputVerifier{
-        public boolean verify(JComponent input) {
-              JTextField tf = (JTextField) input;
-              String s = tf.getText();
-              return data.getTapeAlpha().contains(s.charAt(s.length()-1));
-        }
-    }
 	
 	
 }

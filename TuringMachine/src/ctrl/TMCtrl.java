@@ -44,6 +44,7 @@ public class TMCtrl{
 	public boolean stop;
 	private boolean ready;
 	private JViewport vport;
+	private String nextS;
 	
 	public TMCtrl(TMView v, Machine d){
 		view = v;
@@ -116,6 +117,7 @@ public class TMCtrl{
 		view.getTable().getSelectionModel().clearSelection();
 		view.getStateLabel().setBackground(Color.WHITE);
 		view.getStateLabel().setForeground(Color.BLACK);
+		view.setConfigField("");
 		view.setStateLabel("State");
 		this.end();
 	}
@@ -144,7 +146,7 @@ public class TMCtrl{
 		//Color the head
 		tape.setHead(lect);
 		
-		String nextS = currentTrans.getNextState();
+		nextS = currentTrans.getNextState();
 		if(data.isAccept(nextS)){
 			view.setStateLabel(nextS);
 			view.getStateLabel().setBackground(new Color(0x00D915));
@@ -169,7 +171,25 @@ public class TMCtrl{
 			currentTrans = data.getTransitionFromSym(currentChar, currentState);
 			view.getTable().setRowSelectionInterval(data.getTrans().indexOf(currentTrans), data.getTrans().indexOf(currentTrans));
 			view.setStateLabel(currentState);
+			this.setConfig();
 		}
+		
+	}
+	
+	
+	private void setConfig(){
+		String first = "";
+		String last = "";
+		for(int i=0;i<=lect;i++){
+			first += view.getTapePanel().getChar(i).toString()+" ";
+		}
+		boolean end = false;
+		for(int j=lect;!end;j++){
+			Character c = view.getTapePanel().getChar(j);
+			if(c.equals('_')) end = true;
+			last += " "+c.toString();
+		}
+		view.setConfigField(first+"<b>"+currentState+"</b>"+last);
 	}
 	
 	
@@ -185,7 +205,6 @@ public class TMCtrl{
 			vport.setViewPosition(new Point(0,0));
 		//State in black
 		view.getStateLabel().setForeground(Color.BLACK);
-		
 		String input = view.getInputField().getText();
 		//Tape input can't be empty
 		if(!input.equals("")){
@@ -196,10 +215,11 @@ public class TMCtrl{
 			currentChar = tape.getChar(lect);
 			currentTrans = data.getTransitionFromSym(currentChar, currentState);
 			
-			view.getStateLabel().setBackground(Color.white);
+			view.getStateLabel().setBackground(Color.WHITE);
 			view.setStateLabel(currentState);
 			view.getTable().setRowSelectionInterval(data.getTrans().indexOf(currentTrans), data.getTrans().indexOf(currentTrans));
 			ready = true;
+			this.setConfig();
 		}
 		else {
 			JOptionPane.showMessageDialog(view, "Veuillez inscrire dans le champ ci-dessous le ruban initial.");
