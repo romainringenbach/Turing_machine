@@ -7,9 +7,8 @@ import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.InputVerifier;
 import javax.swing.JButton;
-import javax.swing.JComponent;
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -21,6 +20,10 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 import ctrl.TMListener;
 import data.Machine;
@@ -50,7 +53,7 @@ public class TMView extends JFrame{
 	private JButton butStep2;
 	private JButton butReset;
 	private JTextField inputField;
-	private JTextPane configField;
+	private JTextField configField;
 	private JTable table;
 	private TransitionTableModel model;
 	private Tape tapePanel;
@@ -143,12 +146,12 @@ public class TMView extends JFrame{
 		leftAlign2.add(alphaLabel);
 		leftAlign2.add(Box.createHorizontalGlue());
 		
-		configField = new JTextPane();
-		configField.setContentType("text/html");
+		configField = new JTextField();
 		configField.setMinimumSize(new Dimension(250,30));
 		configField.setPreferredSize(new Dimension(250,30));
 		configField.setMaximumSize(new Dimension(250,30));
-		configField.setBorder(BorderFactory.createMatteBorder(1,1,1,1, new Color(0xB8CFE5)));
+		configField.setEnabled(false);
+		configField.setDisabledTextColor(Color.BLACK);
 		stateLabel = new JLabel("State");
 		stateLabel.setMinimumSize(new Dimension(40,30));
 		stateLabel.setPreferredSize(new Dimension(40,30));
@@ -273,7 +276,7 @@ public class TMView extends JFrame{
 		stateLabel.setText(text);
 	}
 	
-	public JTextPane getConfigField(){
+	public JTextField getConfigField(){
 		return configField;
 	}
 	

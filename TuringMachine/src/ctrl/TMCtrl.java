@@ -16,32 +16,42 @@ public class TMCtrl{
 	private TMView view;
 	private Machine data;
 	private Tape tape;
+	
 	/**
 	 * Indicates the position of the reading head on the tape
 	 */
 	private int lect;
+	
 	/**
 	 * The state of the program in a given moment
 	 */
 	private String currentState;
 	private Character currentChar;
 	private Transition currentTrans;
-	/**
-	 * True if the machine is in accept or reject state
-	 */
-	public boolean ended;
+	
 	/**
 	 * True if the machine is already started and not finished
 	 */
 	public boolean started;
+	
+	/**
+	 * True if the machine is in accept or reject state
+	 */
+	private boolean ended;
+	
 	/**
 	 * True if the machine is running or paused
 	 */
-	public boolean running;
+	private boolean running;
+	
 	/**
 	 * True if the machine must run in 'stop mode'
 	 */
 	public boolean stop;
+	
+	/**
+	 * True if the machine is ready to start (good input)
+	 */
 	private boolean ready;
 	private JViewport vport;
 	private String nextS;
@@ -148,6 +158,7 @@ public class TMCtrl{
 		
 		nextS = currentTrans.getNextState();
 		if(data.isAccept(nextS)){
+			//If the state is 'accept'
 			view.setStateLabel(nextS);
 			view.getStateLabel().setBackground(new Color(0x00D915));
 			view.getStateLabel().setForeground(Color.WHITE);
@@ -155,14 +166,12 @@ public class TMCtrl{
 			this.end();
 		}
 		else if(data.isReject(nextS)){
+			//If the state is 'reject'
 			view.setStateLabel(nextS);
 			view.getStateLabel().setBackground(Color.RED);
 			view.getStateLabel().setForeground(Color.WHITE);
 			JOptionPane.showMessageDialog(view, "Etat rejetant !");
 			this.end();
-		}
-		else if(stop && data.isStop(nextS)){
-			this.stopButton();
 		}
 		else{
 			//Set the new state
@@ -171,7 +180,11 @@ public class TMCtrl{
 			currentTrans = data.getTransitionFromSym(currentChar, currentState);
 			view.getTable().setRowSelectionInterval(data.getTrans().indexOf(currentTrans), data.getTrans().indexOf(currentTrans));
 			view.setStateLabel(currentState);
-			this.setConfig();
+			setConfig();
+		}
+		if(stop && data.isStop(nextS)){
+			//If stop is enable and state is stop, stop the program
+			this.stopButton();
 		}
 		
 	}
@@ -189,7 +202,9 @@ public class TMCtrl{
 			if(c.equals('_')) end = true;
 			last += " "+c.toString();
 		}
-		view.setConfigField(first+"<b>"+currentState+"</b>"+last);
+		view.setConfigField(first+currentState+last);
+		if(ready)
+		data.addConfig(first+currentState+last);
 	}
 	
 	
@@ -238,6 +253,7 @@ public class TMCtrl{
 		running = false;
 		stop = false;
 		view.getButStart().setEnabled(true);
+		data.getTuringIO().saveConfigurations(data.getConfigurations());
 	}
 	/* --------------- */
 	

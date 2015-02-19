@@ -11,6 +11,8 @@ public class Machine {
 	 */
 	private static Machine instance;
 
+	private static TuringIO io;
+
 	/**
 	 * Set of states
 	 */
@@ -30,6 +32,11 @@ public class Machine {
 	 * The list of stopping states (for step by step)
 	 */
 	private ArrayList<String> stop_states;
+	
+	/**
+	 * List of all the configurations during the programm
+	 */
+	private ArrayList<String> configurations;
 
 	/**
 	 * The initial state, within the machine starts
@@ -48,7 +55,7 @@ public class Machine {
 	
 	public static Machine getInstance(){
 		Machine ret = null;
-		TuringIO io = new TuringIO();
+		io = new TuringIO();
 		if(instance == null){
 			ret = new Machine (io.loadMachineAlpha(),io.loadTapeAlpha(),io.loadTrans(),io.loadInitState(),io.loadAcceptState(),io.loadRejectState(),io.loadStopStates());
 		}
@@ -74,6 +81,7 @@ public class Machine {
 		this.accept_state = accept_state;
 		this.reject_state = reject_state;
 		this.stop_states = stopStates;
+		configurations = new ArrayList<String>();
 	} 
 
 	/**
@@ -130,6 +138,14 @@ public class Machine {
 		}
 		return ret;
 	}
+	
+	public void addConfig(String conf){
+		configurations.add(conf);
+	}
+	
+	
+	
+	/* --- Getters --- */
 
 	public ArrayList<Transition> getTrans() {
 		return trans;
@@ -157,5 +173,13 @@ public class Machine {
 
 	public ArrayList<String> getStopStates() {
 		return stop_states;
+	}
+	
+	public ArrayList<String> getConfigurations() {
+		return configurations;
+	}
+	
+	public TuringIO getTuringIO() {
+		return io;
 	}
 }
