@@ -12,8 +12,22 @@ public class TuringIO {
 	
 	private BufferedReader br;
 	private BufferedWriter bw;
-	private final String LOAD_PATH = "../FoncTrans.txt";
-	private final String SAVE_PATH = "../Configurations.txt";
+	private static String LOAD_PATH;
+	private static String SAVE_PATH;
+	
+	private static TuringIO instance;
+	
+	public static TuringIO getInstance(){
+		if(instance == null){
+			instance = new TuringIO();
+		}
+		return instance;
+	}
+	
+	private TuringIO(){
+		LOAD_PATH = "../FoncTrans.txt";
+		SAVE_PATH = "../Configurations.txt";
+	}
 	
 	private void loadBufferReader(){
 		FileReader fr;
@@ -55,6 +69,7 @@ public class TuringIO {
 					throw new IllegalArgumentException("In this bloc, only single character are allow");
 				}
 			}
+			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -79,6 +94,7 @@ public class TuringIO {
 					throw new IllegalArgumentException("In this bloc, only single character are allow");
 				}
 			}
+			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -105,6 +121,7 @@ public class TuringIO {
 					throw new IllegalArgumentException("In this bloc, transitions must have 5 parameters, separeted by a space.");
 				}
 			}
+			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -121,6 +138,7 @@ public class TuringIO {
 			while(!(ret = br.readLine()).equals("<init_state>")  && ret != null);
 			//Ligne suivante de la balise <init_state>
 			ret = br.readLine();
+			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -137,6 +155,7 @@ public class TuringIO {
 			while(!(ret = br.readLine()).equals("<accept_state>")  && ret != null);
 			//Ligne suivante de la balise <accept_state>
 			ret = br.readLine();
+			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -152,6 +171,7 @@ public class TuringIO {
 			while(!(ret = br.readLine()).equals("<reject_state>")  && ret != null);
 			//Ligne suivante de la balise <reject_state>
 			ret = br.readLine();
+			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -171,6 +191,7 @@ public class TuringIO {
 			while(!(line = br.readLine()).equals("</stop_states>") && line != null){
 				ret.add(line);
 			}
+			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -190,5 +211,21 @@ public class TuringIO {
 		} catch (IOException e) {
 				e.printStackTrace();
 		}
+	}
+
+	public String getLOAD_PATH() {
+		return LOAD_PATH;
+	}
+
+	public static void setLOAD_PATH(String path) {
+		LOAD_PATH = path;
+	}
+
+	public String getSAVE_PATH() {
+		return SAVE_PATH;
+	}
+
+	public static void setSAVE_PATH(String path) {
+		SAVE_PATH = path+"/Configurations.txt";
 	}
 }

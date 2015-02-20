@@ -6,11 +6,6 @@ import java.util.NoSuchElementException;
 
 public class Machine {
 	
-	/**
-	 * Instance of Machine
-	 */
-	private static Machine instance;
-
 	private static TuringIO io;
 
 	/**
@@ -53,36 +48,17 @@ public class Machine {
 	 */	
 	private String reject_state;
 	
-	public static Machine getInstance(){
-		Machine ret = null;
-		io = new TuringIO();
-		if(instance == null){
-			ret = new Machine (io.loadMachineAlpha(),io.loadTapeAlpha(),io.loadTrans(),io.loadInitState(),io.loadAcceptState(),io.loadRejectState(),io.loadStopStates());
-		}
-		else ret = instance;
-		return ret;
-	}
-
-	/**
-	 *  Constructor of the Turing Machine.
-	 *	@param machine_alphabet the machine alphabet (alphabet that the user can use)	 
-	 *	@param tape_alphabet the tape alphabet	
-	 *	@param states the states list
-	 *	@param transitions the transitions list (in key the "start_state start_symbol" and in value "final_state final_symbol direction_R_or_L ")	
-	 *	@param init_state the initial state
-	 *	@param accept_state the accept state
-	 *	@param reject_state the reject state
-	 */
-	private Machine(ArrayList<Character> machine_alphabet, ArrayList<Character> tape_alphabet, ArrayList<Transition> states,String init_state, String accept_state, String reject_state, ArrayList<String> stopStates){
-		this.trans = states;
-		this.machine_alphabet = machine_alphabet;
-		this.tape_alphabet = tape_alphabet;
-		this.init_state = init_state;
-		this.accept_state = accept_state;
-		this.reject_state = reject_state;
-		this.stop_states = stopStates;
+	public Machine(){
+		io = TuringIO.getInstance();
+		this.machine_alphabet = io.loadMachineAlpha();
+		this.tape_alphabet = io.loadTapeAlpha();
+		this.trans = io.loadTrans();
+		this.init_state = io.loadInitState();
+		this.accept_state = io.loadAcceptState();
+		this.reject_state = io.loadRejectState();
+		this.stop_states = io.loadStopStates();
 		configurations = new ArrayList<String>();
-	} 
+	}
 
 	/**
 	 *	For given state and symbol, return the unique associated Transition

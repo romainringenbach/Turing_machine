@@ -2,7 +2,10 @@ package ctrl;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.util.Enumeration;
 
+import javax.swing.AbstractButton;
+import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import javax.swing.JViewport;
 
@@ -16,6 +19,7 @@ public class TMCtrl{
 	private TMView view;
 	private Machine data;
 	private Tape tape;
+	private int speed;
 	
 	/**
 	 * Indicates the position of the reading head on the tape
@@ -56,10 +60,11 @@ public class TMCtrl{
 	private JViewport vport;
 	private String nextS;
 	
-	public TMCtrl(TMView v, Machine d){
+	public TMCtrl(TMView v){
 		view = v;
-		data = Machine.getInstance();
+		data = new Machine();
 		lect = 0;
+		speed = 300;
 		ended = false;
 		started = false;
 		running = false;
@@ -83,9 +88,9 @@ public class TMCtrl{
 			new Thread(){
 	            public void run(){
 	            	while(!ended && running){
-	        			TMCtrl.this.doTransition();
 	        			try {
-							Thread.sleep(300); //Can define a speed
+							Thread.sleep(speed);
+							TMCtrl.this.doTransition();
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
@@ -207,6 +212,17 @@ public class TMCtrl{
 		data.addConfig(first+currentState+last);
 	}
 	
+	public void reset(){
+		lect = 0;
+		speed = 300;
+		ended = false;
+		started = false;
+		running = false;
+		stop = false;
+		tape = view.getTapePanel();
+		currentState = data.getInitState();
+	}
+	
 	
 
 	/**
@@ -255,6 +271,20 @@ public class TMCtrl{
 		view.getButStart().setEnabled(true);
 		data.getTuringIO().saveConfigurations(data.getConfigurations());
 	}
+	
+	public String getSelectedRadioText(ButtonGroup buttonGroup) {
+		String ret = "";
+        for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements();) {
+            AbstractButton button = buttons.nextElement();
+            if (button.isSelected()) {
+            	ret =  button.getText();
+            }
+        }
+        return ret;
+    }
+	
+	
+	
 	/* --------------- */
 	
 	
@@ -264,5 +294,17 @@ public class TMCtrl{
 	
 	public Machine getMachine(){
 		return data;
+	}
+	
+	public int getLect(){
+		return lect;
+	}
+	
+	public int getSpeed(){
+		return speed;
+	}
+	
+	public void setSpeed(int s){
+		speed = s;
 	}
 }

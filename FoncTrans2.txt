@@ -1,5 +1,5 @@
 //Syntaxe fichier de configuration de la Turing Machine
-//[Etat actuel] [Symbole lu] [Nouveau symbole] [Direction < (gauche), > (droite)] [Nouvel état]
+//
 //
 
 <machine_alpha>
@@ -14,22 +14,13 @@ _
 </tape_alpha>
 
 <transitions>
-q0 0 0 > q1
-q0 1 1 > q2
-q0 _ _ > rej
-q1 _ _ > acc
-q1 0 0 > rej
-q1 1 1 > rej
-q2 0 0 > q3
-q2 1 1 > q2
-q2 _ _ > rej
-q3 0 0 > q3
-q3 1 1 > q2
-q3 _ _ > acc
+q 0 _ > q
+q 1 _ > q
+q _ _ > acc
 </transitions>
 
 <init_state>
-q0
+q
 </init_state>
 
 <accept_state>
@@ -41,5 +32,5 @@ rej
 </reject_state>
 
 <stop_states>
-q3
+q
 </stop_states>

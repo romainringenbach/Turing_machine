@@ -1,6 +1,5 @@
 package view;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -18,11 +17,16 @@ public class Tape extends JPanel {
 	private ArrayList<Character> symList;
 	private ArrayList<JLabel> labelList;
 	private static final Color TAPE_BORDER_COLOR = new Color(0x7c7c7c);
+	private Color head_color;
+	private int nbCases;
 	
 	private JPanel numberCase;
 	private JPanel caseLabel;
 
 	public Tape(){
+		this.head_color = Color.YELLOW;
+		this.nbCases = 50;
+		
 		this.setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
 		
 		caseLabel = new JPanel();
@@ -35,10 +39,12 @@ public class Tape extends JPanel {
 		
 		this.add(numberCase);
 		this.add(caseLabel);
+		
 		this.setupEmptyTape();
 	}
 	
 	public void initTape(String s){
+		
 		//Reset all
 		symList = new ArrayList<Character>();
 		labelList = new ArrayList<JLabel>();
@@ -79,7 +85,7 @@ public class Tape extends JPanel {
 	
 	public void setHead(int pos){
 		JLabel l = labelList.get(pos);
-		l.setBackground(Color.yellow);
+		l.setBackground(head_color);
 	}
 	
 	
@@ -93,8 +99,6 @@ public class Tape extends JPanel {
 		l.setText(c.toString());
 	}
 	
-	
-	
 	public void reset(){
 		symList = new ArrayList<Character>();
 		labelList = new ArrayList<JLabel>();
@@ -105,7 +109,7 @@ public class Tape extends JPanel {
 	
 	private void setupEmptyTape(){
 		int tmp = labelList.size();
-		for(int j=tmp;j<(tmp+50);j++){
+		for(int j=tmp;j<(tmp+nbCases);j++){
 			JLabel empty = new JLabel("_");
 			empty.setOpaque(true);
 			empty.setPreferredSize(new Dimension(30,30));
@@ -123,5 +127,14 @@ public class Tape extends JPanel {
 		}
 		this.revalidate();
 		this.repaint();
+	}
+	
+	public void setHeadColor(Color col, int posHead){
+		head_color = col;
+		this.setHead(posHead);
+	}
+	
+	public void setNbCases(int nb){
+		nbCases = nb;
 	}
 }

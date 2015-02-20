@@ -7,24 +7,24 @@ import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.JTextPane;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.text.MutableAttributeSet;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
 
+import ctrl.TMCtrl;
 import ctrl.TMListener;
 import data.Machine;
 
@@ -59,13 +59,37 @@ public class TMView extends JFrame{
 	private Tape tapePanel;
 
 	private Machine data;
+	private JMenuBar menuBar;
+	private JMenu menu_fichier;
+	private JMenu menu_exemples;
+	private JMenu menu_param;
+	private JMenuItem menu_charger;
+	private JMenuItem menu_sauver;
+	private JMenuItem menu_fermer;
+	private JMenuItem menu_ex1;
+	private JMenuItem menu_ex2;
+	private JMenuItem menu_vitesse;
+	private JMenu menu_couleur;
+	private JMenu menu_cases;
+	private JRadioButtonMenuItem menu_radio_jaune;
+	private JRadioButtonMenuItem menu_radio_bleu;
+	private JRadioButtonMenuItem menu_radio_rouge;
+	private JRadioButtonMenuItem menu_radio_vert;
+	private JRadioButtonMenuItem menu_radio_50;
+	private JRadioButtonMenuItem menu_radio_100;
+	private JRadioButtonMenuItem menu_radio_200;
+	private ButtonGroup groupCouleur;
+	private ButtonGroup groupCases;
+	private TMCtrl ctrl;
+	private TMListener listener;
 	
 	public TMView(){
 		super();
-		data = Machine.getInstance();
 		this.setResizable(false);
-		this.init();
 		this.setTitle("Turing Machine");
+		this.init();
+		//TODO:Load chosen file, not default one
+		this.loadData();
 		this.setListeners();
 		this.pack();
 		this.setLocationRelativeTo(null);
@@ -92,8 +116,7 @@ public class TMView extends JFrame{
 		tapeScrollPane.setBorder(black);
 		
 		//East
-		model = new TransitionTableModel(data.getTrans());
-		table = new JTable(model);
+		table = new JTable();
 		table.setShowGrid(false);
 		table.setEnabled(false);
 		table.setIntercellSpacing(new Dimension(0,0));
@@ -108,6 +131,7 @@ public class TMView extends JFrame{
 		eastScrollPane.setMinimumSize(new Dimension(240,290));
 		eastScrollPane.setPreferredSize(new Dimension(240,290));
 		eastScrollPane.setMaximumSize(new Dimension(240,290));
+		mainPanel.add(eastScrollPane, BorderLayout.EAST);
 		
 		//West
 		westPanel = new JPanel();
@@ -139,7 +163,7 @@ public class TMView extends JFrame{
 		butReset.setPreferredSize(new Dimension(125,25));
 		
 		alphaLabel = new JLabel();
-		alphaLabel.setText("Alphabet : "+data.getTapeAlpha());
+		
 		JPanel leftAlign2 = new JPanel();
 		leftAlign2.setLayout(new BoxLayout(leftAlign2,BoxLayout.LINE_AXIS));
 		leftAlign2.add(Box.createRigidArea(new Dimension(8,8)));
@@ -207,18 +231,86 @@ public class TMView extends JFrame{
 		westPanel.add(stepPanel);
 		westPanel.add(Box.createRigidArea(new Dimension(10,10)));
 		westPanel.add(resetPanel);
-		westPanel.add(Box.createVerticalGlue());//RigidArea(new Dimension(10,10)));
+		westPanel.add(Box.createVerticalGlue());
 		westPanel.add(configPanel);
 		westPanel.add(Box.createRigidArea(new Dimension(10,10)));
+		
+		//Menu
+		menuBar = new JMenuBar();
+		
+		menu_fichier = new JMenu("Fichier");
+			menu_charger = new JMenuItem("Charger");
+			menu_sauver = new JMenuItem("Sauver");
+			menu_fermer = new JMenuItem("Fermer");
+			
+		menu_fichier.add(menu_charger);
+		menu_fichier.add(menu_sauver);
+		menu_fichier.add(menu_fermer);
+			
+		menu_exemples = new JMenu("Exemples");
+			menu_ex1 = new JMenuItem("Exemple 1");
+			menu_ex2 = new JMenuItem("Exemple 2");
+			
+		menu_exemples.add(menu_ex1);
+		menu_exemples.add(menu_ex2);
+			
+		menu_param = new JMenu("Paramètres");
+			menu_vitesse = new JMenuItem("Délais");
+			menu_couleur = new JMenu("Couleur de tête");
+				menu_radio_jaune = new JRadioButtonMenuItem("Jaune");
+				menu_radio_jaune.setForeground(Color.YELLOW);
+				menu_radio_bleu = new JRadioButtonMenuItem("Bleu");
+				menu_radio_bleu.setForeground(Color.BLUE);
+				menu_radio_rouge = new JRadioButtonMenuItem("Rouge");
+				menu_radio_rouge.setForeground(Color.RED);
+				menu_radio_vert = new JRadioButtonMenuItem("Vert");
+				menu_radio_vert.setForeground(Color.GREEN);
+
+			menu_couleur.add(menu_radio_jaune);
+			menu_couleur.add(menu_radio_bleu);
+			menu_couleur.add(menu_radio_rouge);
+			menu_couleur.add(menu_radio_vert);
+				
+			menu_cases = new JMenu("Nombre de cases vides");
+				menu_radio_50 = new JRadioButtonMenuItem("50");
+				menu_radio_100 = new JRadioButtonMenuItem("100");
+				menu_radio_200 = new JRadioButtonMenuItem("500");
+				
+			menu_cases.add(menu_radio_50);
+			menu_cases.add(menu_radio_100);
+			menu_cases.add(menu_radio_200);
+				
+		menu_param.add(menu_vitesse);
+		menu_param.add(menu_couleur);
+		menu_param.add(menu_cases);
+
+		groupCouleur = new ButtonGroup();
+		groupCouleur.add(menu_radio_jaune);
+		groupCouleur.add(menu_radio_bleu);
+		groupCouleur.add(menu_radio_rouge);
+		groupCouleur.add(menu_radio_vert);
+		menu_radio_jaune.setSelected(true);
+	    
+	    groupCases = new ButtonGroup();
+	    groupCases.add(menu_radio_50);
+	    groupCases.add(menu_radio_100);
+	    groupCases.add(menu_radio_200);
+	    menu_radio_50.setSelected(true);
+	    
+	    menuBar.add(menu_fichier);
+	    menuBar.add(menu_exemples);
+	    menuBar.add(menu_param);
 		
 		mainPanel.add(westPanel, BorderLayout.WEST);
 		mainPanel.add(eastScrollPane, BorderLayout.EAST);
 		mainPanel.add(tapeScrollPane,BorderLayout.NORTH);
+		
+		this.setJMenuBar(menuBar);
 		this.add(mainPanel);
 	}
 	
 	private void setListeners(){
-		TMListener listener = new TMListener(this);
+		listener = new TMListener(this, ctrl);
 		inputField.addKeyListener(listener);
 		
 		butStart.addActionListener(listener);
@@ -227,11 +319,55 @@ public class TMView extends JFrame{
 		butStep2.addActionListener(listener);
 		butReset.addActionListener(listener);
 		
+		menu_charger.addActionListener(listener);
+		menu_sauver.addActionListener(listener);
+		menu_fermer.addActionListener(listener);
+		menu_ex1.addActionListener(listener);
+		menu_ex2.addActionListener(listener);
+		menu_vitesse.addActionListener(listener);
+		
+		menu_radio_50.addItemListener(listener);
+		menu_radio_100.addItemListener(listener);
+		menu_radio_200.addItemListener(listener);
+		
+		menu_radio_jaune.addItemListener(listener);
+		menu_radio_bleu.addItemListener(listener);
+		menu_radio_rouge.addItemListener(listener);
+		menu_radio_vert.addItemListener(listener);
+		
 		inputField.setToolTipText("Appuyer sur 'ENTER' pour initialiser le ruban");
 		butStart.setToolTipText("Lance la machine jusqu'à la fin du programme ou un appui sur le bouton 'Arrêter'");
 		butStop.setToolTipText("Arrête la machine sur l'état actuel");
 		butStep.setToolTipText("Execute une seule transition");
 		butStep2.setToolTipText("Lance la machine jusqu'à un état pause");
+	}
+	
+	
+	public void loadData(){
+		ctrl = new TMCtrl(this);
+		data = ctrl.getMachine();
+		
+		alphaLabel.setText("Alphabet : "+data.getTapeAlpha());
+		
+		model = new TransitionTableModel(data.getTrans());
+		table.setModel(model);
+		
+		if(eastScrollPane != null)
+		mainPanel.remove(eastScrollPane);
+		
+		eastScrollPane = new JScrollPane(table);
+		eastScrollPane.setMinimumSize(new Dimension(240,290));
+		eastScrollPane.setPreferredSize(new Dimension(240,290));
+		eastScrollPane.setMaximumSize(new Dimension(240,290));
+		mainPanel.add(eastScrollPane, BorderLayout.EAST);
+		
+		ctrl.resetButton();
+		
+		if(listener != null)
+			listener.setCtrl(ctrl);
+		
+		mainPanel.revalidate();
+		mainPanel.repaint();
 	}
 
 	/* --- Getters ---*/
@@ -290,6 +426,70 @@ public class TMView extends JFrame{
 
 	public Tape getTapePanel() {
 		return tapePanel;
+	}
+
+	public JMenuItem getMenu_charger() {
+		return menu_charger;
+	}
+
+	public JMenuItem getMenu_sauver() {
+		return menu_sauver;
+	}
+
+	public JMenuItem getMenu_fermer() {
+		return menu_fermer;
+	}
+
+	public JMenuItem getMenu_ex1() {
+		return menu_ex1;
+	}
+
+	public JMenuItem getMenu_ex2() {
+		return menu_ex2;
+	}
+
+	public JMenu getMenu_cases() {
+		return menu_cases;
+	}
+	
+	public JMenuItem getMenu_vitesse() {
+		return menu_vitesse;
+	}
+
+	public JRadioButtonMenuItem getMenu_radio_jaune() {
+		return menu_radio_jaune;
+	}
+
+	public JRadioButtonMenuItem getMenu_radio_bleu() {
+		return menu_radio_bleu;
+	}
+
+	public JRadioButtonMenuItem getMenu_radio_rouge() {
+		return menu_radio_rouge;
+	}
+
+	public JRadioButtonMenuItem getMenu_radio_vert() {
+		return menu_radio_vert;
+	}
+
+	public JRadioButtonMenuItem getMenu_radio_50() {
+		return menu_radio_50;
+	}
+
+	public JRadioButtonMenuItem getMenu_radio_100() {
+		return menu_radio_100;
+	}
+
+	public JRadioButtonMenuItem getMenu_radio_200() {
+		return menu_radio_200;
+	}
+	
+	public ButtonGroup getGroupCases(){
+		return groupCases;
+	}
+	
+	public ButtonGroup getGroupCouleur(){
+		return groupCouleur;
 	}
 	
 	
