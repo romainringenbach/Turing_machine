@@ -61,6 +61,10 @@ public class TMCtrl{
 	private String nextS;
 	private JViewport vport2;
 	
+	public static void main(String[] args) {
+		new TMView();
+	}
+	
 	public TMCtrl(TMView v){
 		view = v;
 		data = new Machine();
@@ -149,6 +153,7 @@ public class TMCtrl{
 	private void doTransition(){
 		view.setStateLabelColor(Color.WHITE);
 		//Scroll the panel to the head
+		view.getScrollTrans().getViewport().setViewPosition(new Point(0,data.getTrans().indexOf(currentTrans)*13));
 		if(lect >= 9){
 			vport.setViewPosition(new Point(lect*30-8*30,0));
 		}
@@ -189,7 +194,6 @@ public class TMCtrl{
 			currentState = currentTrans.getNextState();
 			currentTrans = data.getTransitionFromSym(currentChar, currentState);
 			view.getTable().setRowSelectionInterval(data.getTrans().indexOf(currentTrans), data.getTrans().indexOf(currentTrans));
-			vport2.setViewPosition(new Point(0,100));//data.getTrans().indexOf(currentTrans)*10));
 			view.setStateLabel(currentState);
 			setConfig();
 		}

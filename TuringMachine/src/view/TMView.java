@@ -30,10 +30,6 @@ import data.Machine;
 
 public class TMView extends JFrame{
 
-	public static void main(String[] args) {
-		new TMView();
-	}
-	
 	private static final long serialVersionUID = 1L;
 	private JPanel mainPanel;
 	private JPanel westPanel;
