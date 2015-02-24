@@ -25,7 +25,7 @@ public class TuringIO {
 	}
 	
 	private TuringIO(){
-		LOAD_PATH = "../FoncTrans.txt";
+		//LOAD_PATH = "../FoncTrans.txt";
 		SAVE_PATH = "../Configurations.txt";
 	}
 	
@@ -48,8 +48,6 @@ public class TuringIO {
 			e.printStackTrace();
 		}
 	}
-	
-	
 	
 	public ArrayList<Character> loadMachineAlpha(){
 		this.loadBufferReader();

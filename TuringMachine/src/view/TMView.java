@@ -9,6 +9,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -22,11 +23,13 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import ctrl.TMCtrl;
 import ctrl.TMListener;
 import data.Machine;
+import data.TuringIO;
 
 public class TMView extends JFrame{
 
@@ -85,7 +88,15 @@ public class TMView extends JFrame{
 		this.setTitle("Turing Machine");
 		this.init();
 		//TODO:Load chosen file, not default one
-		this.loadData();
+		JFileChooser chooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Text file", "txt");
+		chooser.setFileFilter(filter);
+		int returnVal = chooser.showOpenDialog(this);
+		if(returnVal == JFileChooser.APPROVE_OPTION) {
+			TuringIO.setLOAD_PATH(chooser.getSelectedFile().getAbsolutePath());
+			this.loadData();
+		}
+		//this.loadData();
 		this.setListeners();
 		this.pack();
 		this.setLocationRelativeTo(null);
@@ -346,7 +357,7 @@ public class TMView extends JFrame{
 		ctrl = new TMCtrl(this);
 		data = ctrl.getMachine();
 		
-		alphaLabel.setText("Alphabet : "+data.getTapeAlpha());
+		alphaLabel.setText("Alphabet : "+data.getMachineAlpha());
 		
 		model = new TransitionTableModel(data.getTrans());
 		table.setModel(model);
@@ -364,6 +375,7 @@ public class TMView extends JFrame{
 		
 		ctrl.resetButton();
 		
+		//Set the new controler (new object for new data) to the listener
 		if(listener != null)
 			listener.setCtrl(ctrl);
 		

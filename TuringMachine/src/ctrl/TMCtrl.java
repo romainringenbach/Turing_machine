@@ -59,7 +59,6 @@ public class TMCtrl{
 	private boolean ready;
 	private JViewport vport;
 	private String nextS;
-	private JViewport vport2;
 	
 	public static void main(String[] args) {
 		new TMView();
@@ -77,7 +76,6 @@ public class TMCtrl{
 		tape = view.getTapePanel();
 		currentState = data.getInitState();
 		vport = view.getScrollTape().getViewport();
-		vport2 = view.getScrollTrans().getViewport();
 	}
 	
 	/* --- Actions --- */
@@ -120,6 +118,13 @@ public class TMCtrl{
 	}
 	
 	/**
+	 * Launch the machine until a stop state
+	 */
+	public void step2Button(){
+		this.startButton(true);
+	}
+
+	/**
 	 * Stop the running program
 	 */
 	public void stopButton(){
@@ -128,16 +133,10 @@ public class TMCtrl{
 		view.getButStart().setEnabled(true);
 	}
 	
-	/**
-	 * Launch the machine until a stop state
-	 */
-	public void step2Button(){
-		this.startButton(true);
-	}
 	
 	public void resetButton(){
-		view.getInputField().setText("");
 		tape.reset();
+		view.getInputField().setText("");
 		view.getTable().getSelectionModel().clearSelection();
 		view.getStateLabel().setBackground(Color.WHITE);
 		view.getStateLabel().setForeground(Color.BLACK);
@@ -153,10 +152,10 @@ public class TMCtrl{
 	private void doTransition(){
 		view.setStateLabelColor(Color.WHITE);
 		//Scroll the panel to the head
-		view.getScrollTrans().getViewport().setViewPosition(new Point(0,data.getTrans().indexOf(currentTrans)*13));
-		if(lect >= 9){
+		//view.getScrollTrans().getViewport().setViewPosition(new Point(0,data.getTrans().indexOf(currentTrans)*12));
+		if(lect >= 9)
 			vport.setViewPosition(new Point(lect*30-8*30,0));
-		}
+		
 		currentChar = tape.getChar(lect);
 		currentTrans = data.getTransitionFromSym(currentChar, currentState);
 		
@@ -195,21 +194,20 @@ public class TMCtrl{
 			currentTrans = data.getTransitionFromSym(currentChar, currentState);
 			view.getTable().setRowSelectionInterval(data.getTrans().indexOf(currentTrans), data.getTrans().indexOf(currentTrans));
 			view.setStateLabel(currentState);
-			setConfig();
+			this.setConfig();
 		}
 		if(stop && data.isStop(nextS)){
 			//If stop is enable and state is stop, stop the program
 			view.setStateLabelColor(Color.YELLOW);
 			this.stopButton();
 		}
-		
 	}
 	
 	
 	private void setConfig(){
 		String first = "";
 		String last = "";
-		for(int i=0;i<=lect;i++){
+		for(int i=0;i<lect;i++){
 			first += view.getTapePanel().getChar(i).toString()+" ";
 		}
 		boolean end = false;
@@ -218,9 +216,10 @@ public class TMCtrl{
 			if(c.equals('_')) end = true;
 			last += " "+c.toString();
 		}
-		view.setConfigField(first+currentState+last);
-		if(ready)
-		data.addConfig(first+currentState+last);
+		String config = first+currentState+last;
+		view.setConfigField(config);
+		if(started)
+			data.addConfig(config);
 	}
 	
 	public void reset(){

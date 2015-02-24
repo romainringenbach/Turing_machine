@@ -49,6 +49,7 @@ public class Machine {
 	private String reject_state;
 	
 	public Machine(){
+		//Read the chosen config file to init attributes
 		io = TuringIO.getInstance();
 		this.machine_alphabet = io.loadMachineAlpha();
 		this.tape_alphabet = io.loadTapeAlpha();

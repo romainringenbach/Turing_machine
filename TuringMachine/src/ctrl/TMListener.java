@@ -47,7 +47,7 @@ public class TMListener implements ActionListener, KeyListener, ItemListener{
 	@Override
 	public void keyTyped(KeyEvent e) {
 		Character c = e.getKeyChar();
-		if(e.getSource() == view.getInputField() && !ctrl.getMachine().getTapeAlpha().contains(c)){
+		if(e.getSource() == view.getInputField() && !ctrl.getMachine().getMachineAlpha().contains(c)){
 			e.consume();
 		}
 	}
@@ -61,17 +61,14 @@ public class TMListener implements ActionListener, KeyListener, ItemListener{
 	public void actionPerformed(ActionEvent e) {
 		Object src = e.getSource();
 		if(src == view.getButStart()){
-			//if(!ctrl.started)
 				ctrl.init();
 			ctrl.startButton(false);
 		}
 		if(src == view.getButStep()){
-			//if(!ctrl.started)
 				ctrl.init();
 			ctrl.startStepButton();
 		}
 		if(src == view.getButStep2()){
-			//if(!ctrl.started)
 				ctrl.init();
 			ctrl.step2Button();
 		}
@@ -112,7 +109,7 @@ public class TMListener implements ActionListener, KeyListener, ItemListener{
 			System.out.println("Exemple 2");
 		}
 		if(src == view.getMenu_vitesse()){
-			SpinnerNumberModel sModel = new SpinnerNumberModel(ctrl.getSpeed(), 0, 5000, 100);
+			SpinnerNumberModel sModel = new SpinnerNumberModel(ctrl.getSpeed(), 0, 5000, 50);
 			JSpinner spinner = new JSpinner(sModel);
 			int option = JOptionPane.showOptionDialog(view, spinner, "Entrez le délai d'exécution", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 			if(option == JOptionPane.OK_OPTION){

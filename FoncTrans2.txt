@@ -5,12 +5,12 @@
 <machine_alpha>
 0
 1
-_
 </machine_alpha>
 
 <tape_alpha>
 0
 1
+_
 </tape_alpha>
 
 <transitions>

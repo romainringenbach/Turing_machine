@@ -14,7 +14,6 @@ import javax.swing.UIManager;
 public class Tape extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private ArrayList<Character> symList;
 	private ArrayList<JLabel> labelList;
 	private static final Color TAPE_BORDER_COLOR = new Color(0x7c7c7c);
 	private Color head_color;
@@ -34,7 +33,6 @@ public class Tape extends JPanel {
 		
 		caseLabel.setLayout(new GridLayout());
 		numberCase.setLayout(new GridLayout());
-		symList = new ArrayList<Character>();
 		labelList = new ArrayList<JLabel>();
 		
 		this.add(numberCase);
@@ -46,14 +44,12 @@ public class Tape extends JPanel {
 	public void initTape(String s){
 		
 		//Reset all
-		symList = new ArrayList<Character>();
 		labelList = new ArrayList<JLabel>();
 		caseLabel.removeAll();
 		numberCase.removeAll();
 		
 		for(int i=0;i<s.length();i++){
 			Character c = s.charAt(i);
-			symList.add(c);
 			JLabel addLabel = new JLabel();
 			addLabel.setOpaque(true);
 			addLabel.setPreferredSize(new Dimension(30,30));
@@ -100,7 +96,6 @@ public class Tape extends JPanel {
 	}
 	
 	public void reset(){
-		symList = new ArrayList<Character>();
 		labelList = new ArrayList<JLabel>();
 		caseLabel.removeAll();
 		numberCase.removeAll();
