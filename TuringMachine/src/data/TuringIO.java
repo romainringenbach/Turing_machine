@@ -25,8 +25,47 @@ public class TuringIO {
 	}
 	
 	private TuringIO(){
-		//LOAD_PATH = "../FoncTrans.txt";
-		SAVE_PATH = "../Configurations.txt";
+		LOAD_PATH = "../Configuration.txt";
+		SAVE_PATH = "../TapeConfiguration.txt";
+	}
+
+	public String getConfiguration(String path){
+
+		String ret = null;
+
+		try {
+
+			if (path == null){
+				path = this.LOAD_PATH;
+			}
+
+			FileReader fr = new FileReader(new File(path));
+			br = new BufferedReader(fr);
+
+			String line = br.readLine();
+			ret = line ;
+			line = br.readLine();
+	 
+			while (line != null)
+			{
+			       
+			    ret = ret + "\n" + line;
+			    line = br.readLine();
+			       
+			}
+			 
+			br.close();
+
+		}
+		catch (Exception e){
+
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}	
+
+		return ret;
+
+
 	}
 	
 	private void loadBufferReader(){
@@ -48,154 +87,7 @@ public class TuringIO {
 			e.printStackTrace();
 		}
 	}
-	
-	public ArrayList<Character> loadMachineAlpha(){
-		this.loadBufferReader();
-		
-		ArrayList<Character> ret = new ArrayList<Character>();
-		String line = "";
-		
-		try {
-			//Lis jusqu'à la balise <machine_alpha>
-			while(!(line = br.readLine()).equals("<machine_alpha>")  && line != null);
-			//Lis jusqu'à la balise </machine_alpha> (Fin du bloc)
-			while(!(line = br.readLine()).equals("</machine_alpha>") && line != null){
-				if(line.length() == 1){
-					ret.add(line.charAt(0));
-				}
-				else{
-					throw new IllegalArgumentException("In this bloc, only single character are allow");
-				}
-			}
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return ret;
-	}
-	
-	public ArrayList<Character> loadTapeAlpha(){
-		this.loadBufferReader();
-		
-		ArrayList<Character> ret = new ArrayList<Character>();
-		String line = "";
-		
-		try {
-			//Lis jusqu'à la balise <tape_alpha>
-			while(!(line = br.readLine()).equals("<tape_alpha>")  && line != null);
-			//Lis jusqu'à la balise </tape_alpha> (Fin du bloc)
-			while(!(line = br.readLine()).equals("</tape_alpha>") && line != null){
-				if(line.length() == 1){
-					ret.add(line.charAt(0));
-				}
-				else{
-					throw new IllegalArgumentException("In this bloc, only single character are allow");
-				}
-			}
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return ret;
-	}
-	
-	public ArrayList<Transition> loadTrans(){
-		this.loadBufferReader();
-		
-		ArrayList<Transition> ret = new ArrayList<Transition>();
-		String line = "";
-		
-		try {
-			//Lis jusqu'à la balise <transitions>
-			while(!(line = br.readLine()).equals("<transitions>")  && line != null);
-			//Lis jusqu'à la balise </transitions> (Fin du bloc)
-			while(!(line = br.readLine()).equals("</transitions>") && line != null){
-				String[] splited = line.split(" ");
-				if(splited.length == 5){
-					Transition t = new Transition(splited[0],splited[1].charAt(0),splited[2].charAt(0),splited[3],splited[4]);
-					ret.add(t);
-				}
-				else{
-					throw new IllegalArgumentException("In this bloc, transitions must have 5 parameters, separeted by a space.");
-				}
-			}
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return ret;
-	}
-	
-	public String loadInitState(){
-		this.loadBufferReader();
-		
-		String ret = "";
-		
-		try {
-			//Lis jusqu'à la balise <init_state>
-			while(!(ret = br.readLine()).equals("<init_state>")  && ret != null);
-			//Ligne suivante de la balise <init_state>
-			ret = br.readLine();
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return ret;
-	}
-	
-	public String loadAcceptState(){
-		this.loadBufferReader();
-		
-		String ret = null;
-		
-		try {
-			//Lis jusqu'à la balise <accept_state>
-			while(!(ret = br.readLine()).equals("<accept_state>")  && ret != null);
-			//Ligne suivante de la balise <accept_state>
-			ret = br.readLine();
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return ret;
-	}
-	
-	public String loadRejectState(){
-		this.loadBufferReader();
-		
-		String ret = null;
-		try {
-			//Lis jusqu'à la balise <reject_state>
-			while(!(ret = br.readLine()).equals("<reject_state>")  && ret != null);
-			//Ligne suivante de la balise <reject_state>
-			ret = br.readLine();
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return ret;
-	}
-	
-	public ArrayList<String> loadStopStates(){
-		this.loadBufferReader();
-		
-		ArrayList<String> ret = new ArrayList<String>();
-		String line = "";
-		
-		try {
-			//Lis jusqu'à la balise <stop_states>
-			while(!(line = br.readLine()).equals("<stop_states>")  && line != null);
-			//Lis jusqu'à la balise </stop_states> (Fin du bloc)
-			while(!(line = br.readLine()).equals("</stop_states>") && line != null){
-				ret.add(line);
-			}
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return ret;
-	}
-	
+
 	
 	public void saveConfigurations(ArrayList<String> conf){
 		this.loadBufferWriter();
@@ -224,6 +116,6 @@ public class TuringIO {
 	}
 
 	public static void setSAVE_PATH(String path) {
-		SAVE_PATH = path+"/Configurations.txt";
+		SAVE_PATH = path+"/TapeConfiguration.txt";
 	}
 }
