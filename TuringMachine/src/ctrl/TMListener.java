@@ -61,19 +61,18 @@ public class TMListener implements ActionListener, KeyListener, ItemListener{
 	public void actionPerformed(ActionEvent e) {
 		Object src = e.getSource();
 		if(src == view.getButStart()){
-			if(!ctrl.started){
+			//if(!ctrl.started)
 				ctrl.init();
-			}
 			ctrl.startButton(false);
 		}
 		if(src == view.getButStep()){
-			if(!ctrl.started) ctrl.init();
+			//if(!ctrl.started)
+				ctrl.init();
 			ctrl.startStepButton();
 		}
 		if(src == view.getButStep2()){
-			if(!ctrl.started){
+			//if(!ctrl.started)
 				ctrl.init();
-			}
 			ctrl.step2Button();
 		}
 		if(src == view.getButStop()){

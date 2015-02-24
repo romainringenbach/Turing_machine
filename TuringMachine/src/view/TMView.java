@@ -112,6 +112,7 @@ public class TMView extends JFrame{
 		tapeScrollPane.setPreferredSize(new Dimension(575,70));
 		tapeScrollPane.setMaximumSize(new Dimension(575,70));
 		tapeScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		tapeScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		Border black = BorderFactory.createLineBorder(Color.black);
 		tapeScrollPane.setBorder(black);
 		
@@ -131,6 +132,8 @@ public class TMView extends JFrame{
 		eastScrollPane.setMinimumSize(new Dimension(240,290));
 		eastScrollPane.setPreferredSize(new Dimension(240,290));
 		eastScrollPane.setMaximumSize(new Dimension(240,290));
+		eastScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		eastScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		mainPanel.add(eastScrollPane, BorderLayout.EAST);
 		
 		//West
@@ -353,12 +356,14 @@ public class TMView extends JFrame{
 		table.setModel(model);
 		
 		if(eastScrollPane != null)
-		mainPanel.remove(eastScrollPane);
+			mainPanel.remove(eastScrollPane);
 		
 		eastScrollPane = new JScrollPane(table);
 		eastScrollPane.setMinimumSize(new Dimension(240,290));
 		eastScrollPane.setPreferredSize(new Dimension(240,290));
 		eastScrollPane.setMaximumSize(new Dimension(240,290));
+		eastScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		eastScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		mainPanel.add(eastScrollPane, BorderLayout.EAST);
 		
 		ctrl.resetButton();
@@ -396,6 +401,10 @@ public class TMView extends JFrame{
 		return tapeScrollPane;
 	}
 	
+	public JScrollPane getScrollTrans(){
+		return eastScrollPane;
+	}
+	
 	public JTable getTable() {
 		return table;
 	}
@@ -406,6 +415,15 @@ public class TMView extends JFrame{
 	
 	public JLabel getStateLabel() {
 		return stateLabel;
+	}
+	
+	public void setStateLabelColor(Color c){
+		stateLabel.setBackground(c);
+		if(c == Color.WHITE || c == Color.YELLOW){
+			stateLabel.setForeground(Color.BLACK);
+		}
+		else
+			stateLabel.setForeground(Color.WHITE);
 	}
 	
 	public void setStateLabel(String text) {

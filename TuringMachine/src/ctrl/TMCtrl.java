@@ -59,6 +59,7 @@ public class TMCtrl{
 	private boolean ready;
 	private JViewport vport;
 	private String nextS;
+	private JViewport vport2;
 	
 	public TMCtrl(TMView v){
 		view = v;
@@ -72,6 +73,7 @@ public class TMCtrl{
 		tape = view.getTapePanel();
 		currentState = data.getInitState();
 		vport = view.getScrollTape().getViewport();
+		vport2 = view.getScrollTrans().getViewport();
 	}
 	
 	/* --- Actions --- */
@@ -85,6 +87,7 @@ public class TMCtrl{
 			started = true;
 			running = true;
 			view.getButStart().setEnabled(false);
+			view.getInputField().setEnabled(false);
 			new Thread(){
 	            public void run(){
 	            	while(!ended && running){
@@ -106,6 +109,7 @@ public class TMCtrl{
 	 */
 	public void startStepButton(){
 		started = true;
+		view.getInputField().setEnabled(false);
 		if(!ended){
 			TMCtrl.this.doTransition();
 		}
@@ -116,6 +120,7 @@ public class TMCtrl{
 	 */
 	public void stopButton(){
 		running = false;
+		view.getInputField().setEnabled(true);
 		view.getButStart().setEnabled(true);
 	}
 	
@@ -142,11 +147,11 @@ public class TMCtrl{
 	 * Do the next transition of the machine
 	 */
 	private void doTransition(){
+		view.setStateLabelColor(Color.WHITE);
 		//Scroll the panel to the head
 		if(lect >= 9){
 			vport.setViewPosition(new Point(lect*30-8*30,0));
 		}
-		
 		currentChar = tape.getChar(lect);
 		currentTrans = data.getTransitionFromSym(currentChar, currentState);
 		
@@ -184,11 +189,13 @@ public class TMCtrl{
 			currentState = currentTrans.getNextState();
 			currentTrans = data.getTransitionFromSym(currentChar, currentState);
 			view.getTable().setRowSelectionInterval(data.getTrans().indexOf(currentTrans), data.getTrans().indexOf(currentTrans));
+			vport2.setViewPosition(new Point(0,100));//data.getTrans().indexOf(currentTrans)*10));
 			view.setStateLabel(currentState);
 			setConfig();
 		}
 		if(stop && data.isStop(nextS)){
 			//If stop is enable and state is stop, stop the program
+			view.setStateLabelColor(Color.YELLOW);
 			this.stopButton();
 		}
 		
@@ -231,30 +238,33 @@ public class TMCtrl{
 	 */
 	public boolean init(){
 		boolean ret = true;
-		//Set the scroll bar to the left born
-		if(vport.getViewPosition().getX() > 0)
-			vport.setViewPosition(new Point(0,0));
-		//State in black
-		view.getStateLabel().setForeground(Color.BLACK);
-		String input = view.getInputField().getText();
-		//Tape input can't be empty
-		if(!input.equals("")){
-			tape.initTape(input);
-			lect = 0;
-			ended = false;
-			currentState = data.getInitState();
-			currentChar = tape.getChar(lect);
-			currentTrans = data.getTransitionFromSym(currentChar, currentState);
-			
-			view.getStateLabel().setBackground(Color.WHITE);
-			view.setStateLabel(currentState);
-			view.getTable().setRowSelectionInterval(data.getTrans().indexOf(currentTrans), data.getTrans().indexOf(currentTrans));
-			ready = true;
-			this.setConfig();
-		}
-		else {
-			JOptionPane.showMessageDialog(view, "Veuillez inscrire dans le champ ci-dessous le ruban initial.");
-			ready = false;
+		//Initialise only if the programm is not already started
+		if(!started){
+			//Set the scroll bar to the left born
+			if(vport.getViewPosition().getX() > 0)
+				vport.setViewPosition(new Point(0,0));
+			//State in black
+			//view.getStateLabel().setForeground(Color.BLACK);
+			String input = view.getInputField().getText();
+			//Tape input can't be empty
+			if(!input.equals("")){
+				tape.initTape(input);
+				lect = 0;
+				ended = false;
+				currentState = data.getInitState();
+				currentChar = tape.getChar(lect);
+				currentTrans = data.getTransitionFromSym(currentChar, currentState);
+				
+				view.setStateLabelColor(Color.WHITE);
+				view.setStateLabel(currentState);
+				view.getTable().setRowSelectionInterval(data.getTrans().indexOf(currentTrans), data.getTrans().indexOf(currentTrans));
+				ready = true;
+				this.setConfig();
+			}
+			else {
+				JOptionPane.showMessageDialog(view, "Veuillez inscrire dans le champ ci-dessous le ruban initial.");
+				ready = false;
+			}
 		}
 		return ret;
 
@@ -269,6 +279,7 @@ public class TMCtrl{
 		running = false;
 		stop = false;
 		view.getButStart().setEnabled(true);
+		view.getInputField().setEnabled(true);
 		data.getTuringIO().saveConfigurations(data.getConfigurations());
 	}
 	

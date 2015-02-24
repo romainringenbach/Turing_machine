@@ -1,0 +1,84 @@
+//Syntaxe fichier de configuration de la Turing Machine
+//
+//
+
+<machine_alpha>
+0
+1
+_
+#
+a
+b
+</machine_alpha>
+
+<tape_alpha>
+0
+1
+</tape_alpha>
+
+<transitions>
+q0 _ # > acc
+q0 0 b > q2
+q0 1 a > q1
+q0 # # > rej
+q0 a a > rej
+q0 b b > rej
+q1 _ # > q3
+q1 0 0 > q1
+q1 1 1 > q1
+q1 # # > rej
+q1 a a > rej
+q1 b b > rej
+q2 0 0 > q2
+q2 1 1 > q2
+q2 _ # > q5
+q2 # # > rej
+q2 a a > rej
+q2 b b > rej
+q3 # # > q3
+q3 0 0 > q3
+q3 1 1 > q3
+q3 _ 1 < q4
+q3 a a > rej
+q3 b b > rej
+q4 # # < q4
+q4 0 0 < q4
+q4 1 1 < q4
+q4 a 1 > q7
+q4 _ _ > rej
+q4 b b > rej
+q5 # # > q5
+q5 0 0 > q5
+q5 1 1 > q5
+q5 _ 0 < q6
+q5 a a > rej
+q5 b b > rej
+q6 # # < q6
+q6 0 0 < q6
+q6 1 1 < q6
+q6 b 0 > q7
+q6 a a > rej
+q6 b b > rej
+q7 1 a > q3
+q7 0 b > q5
+q7 # # > acc
+q7 _ _ > rej
+q7 a a > rej
+q7 b b > rej
+</transitions>
+
+<init_state>
+q0
+</init_state>
+
+<accept_state>
+acc
+</accept_state>
+
+<reject_state>
+rej
+</reject_state>
+
+<stop_states>
+q7
+</stop_states>
