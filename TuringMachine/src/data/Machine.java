@@ -48,8 +48,14 @@ public class Machine {
 	 */	
 	private String reject_state;
 	
-	public Machine(){
-		//Read the chosen config file to init attributes
+	public static Machine getMachine() throws Exception{
+
+		TuringSyntaxe ts = TuringSyntaxe.getInstance();
+
+		return ts.checkAndCreate(null);
+
+		/*
+
 		io = TuringIO.getInstance();
 		this.machine_alphabet = io.loadMachineAlpha();
 		this.tape_alphabet = io.loadTapeAlpha();
@@ -59,6 +65,38 @@ public class Machine {
 		this.reject_state = io.loadRejectState();
 		this.stop_states = io.loadStopStates();
 		configurations = new ArrayList<String>();
+
+		*/
+
+	}
+
+	public static Machine getMachine(String path) throws Exception{
+
+		TuringSyntaxe ts = TuringSyntaxe.getInstance();
+
+		return ts.checkAndCreate(path);		
+
+	}
+
+	public Machine 		(ArrayList<Transition> trans,
+						 ArrayList<Character> machine_alphabet,
+						 ArrayList<Character> tape_alphabet,
+						 ArrayList<String> stop_states,
+						 String init_state,
+						 String accept_state,
+						 String reject_state
+						){
+
+
+		this.machine_alphabet 	= machine_alphabet;
+		this.tape_alphabet 		= tape_alphabet;
+		this.trans 				= trans;
+		this.init_state 		= init_state;
+		this.accept_state 		= accept_state;
+		this.reject_state 		= reject_state;
+		this.stop_states 		= stop_states;		
+		configurations = new ArrayList<String>();
+
 	}
 
 	/**
