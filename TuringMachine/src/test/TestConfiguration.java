@@ -35,7 +35,7 @@ public class TestConfiguration {
 		testException("../tests/TestState.txt", "If element in states is not like \"word\" or \"word S\" : catch exception"); 
 		testException("../tests/TestTransitionForthChar.txt", "If forth element of a transition is not a tape alphabet : catch exception"); 
 		testException("../tests/TestAlreadyInTransition.txt", "If transition is already in transitions (same currentState and readTape_alphabet) : catch exception"); 
-
+		testException("../tests/TestAlreadyInUnknowTransition.txt", "If transition is already in unknows transitions (same currentState and readTape_alphabet) : catch exception"); 
 
 
 	}
@@ -59,7 +59,7 @@ public class TestConfiguration {
 
 		try {
 			TuringSyntaxe.getInstance().checkAndCreate(path);
-			System.out.print("true  : Test : "+str);
+			System.out.println("true  : Test : "+str);
 		}
 		catch (Exception e){
 			System.out.println("false : Test : "+str);

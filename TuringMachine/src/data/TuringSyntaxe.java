@@ -330,6 +330,14 @@ public final class TuringSyntaxe {
 								find = (tmp.getCurrentState().equals(current) && tmp.getReadSymbole().equals(readS));
 							}
 
+							it = transitions_with_unknow_state.iterator();
+
+							while(it.hasNext() && !find){
+								tmp = it.next();
+
+								find = (tmp.getCurrentState().equals(current) && tmp.getReadSymbole().equals(readS));
+							}								
+
 							if(!find){
 
 								aTransition = new Transition(current, readS, newS, dir, next);
@@ -343,14 +351,14 @@ public final class TuringSyntaxe {
 
 							}
 							else{
-								throw new Exception("there are already transitions with this current state and current symbol, error : "+areas[7]);
+								throw new Exception("there are already transitions with this current state and current symbol, error : "+transition);
 							}
 							
 
 
 						}
 						else {
-							throw new Exception("transition must be like \" state tape_alphabet state tape_alphabet [RL]  \", error : "+areas[7]);
+							throw new Exception("transition must be like \" state tape_alphabet state tape_alphabet [RL]  \", error : "+transition);
 						}
 
 				}				
