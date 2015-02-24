@@ -1,0 +1,37 @@
+states:
+
+  1 S,
+  2,
+  3,
+  5 S,
+  
+:machine_alphabet:
+
+  a b c
+  d e f
+  
+:tape_alphabet:
+
+  a b c
+  d e f # [ ]
+  
+:transitions:
+
+  1 a 2 # <,
+  2 b 3 [ >,
+  2 c 4 [ >,
+  2 d 6 [ >,
+
+:init_state:
+
+  1
+  
+:accept_state:
+
+  6
+  
+:reject_state:
+
+  4
+  
+:end 
