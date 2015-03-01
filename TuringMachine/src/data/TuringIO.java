@@ -36,7 +36,7 @@ public class TuringIO {
 		try {
 
 			if (path == null){
-				path = this.LOAD_PATH;
+				path = TuringIO.LOAD_PATH;
 			}
 
 			FileReader fr = new FileReader(new File(path));
@@ -103,7 +103,7 @@ public class TuringIO {
 		}
 	}
 
-	public String getLOAD_PATH() {
+	public static String getLOAD_PATH() {
 		return LOAD_PATH;
 	}
 
@@ -111,7 +111,7 @@ public class TuringIO {
 		LOAD_PATH = path;
 	}
 
-	public String getSAVE_PATH() {
+	public static String getSAVE_PATH() {
 		return SAVE_PATH;
 	}
 

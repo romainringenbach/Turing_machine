@@ -1,37 +1,31 @@
 states:
 
-  1 g S,
-  2,
-  3,
-  5 S,
+ q0,
   
 :machine_alphabet:
 
-  a b c
-  d e f
+ 1 0
   
 :tape_alphabet:
 
-  a b c
-  d e f # [ ]
+  1 0 _
   
 :transitions:
 
-  1 a 2 # <,
-  2 b 3 [ >,
-  2 c 4 [ >,
-  2 d 6 [ >,
+  q0 _ q0 _ >,
+  q0 0 q0 _ >,
+  q0 1 acc _ >,
 
 :init_state:
 
-  1
+  q0
   
 :accept_state:
 
-  6
+  acc
   
 :reject_state:
 
-  4
+  rej
   
 :end

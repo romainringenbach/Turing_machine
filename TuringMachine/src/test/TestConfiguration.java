@@ -6,11 +6,6 @@ public class TestConfiguration {
 
 	public static void main(String[] args){
 
-
-
-
-
-
 		testNoException("../tests/Configurations.txt", "The good configuration, no exception will be catch");
 		testException("../tests/TestEndFollowRejectState.txt", "If end not follow Reject State area : catch exception"); 
 		testException("../tests/TestMAInTA.txt", "If machine alphabet is not in tape alphabet : catch exception"); 
@@ -40,10 +35,7 @@ public class TestConfiguration {
 		testException("../tests/TestTransitionForthChar.txt", "If forth element of a transition is not a tape alphabet : catch exception"); 
 		testException("../tests/TestAlreadyInTransition.txt", "If transition is already in transitions (same currentState and readTape_alphabet) : catch exception"); 
 		testException("../tests/TestAlreadyInUnknowTransition.txt", "If transition is already in unknows transitions (same currentState and readTape_alphabet) : catch exception"); 
-		testException("../tests/TestAlreadyInMachine.txt", "If this symbole is already in machine alphabet : catch exception"); 
-		testException("../tests/TestAlreadyInTape.txt", "If this symbole is already in tape alphabet : catch exception"); 
-		testNoException("../tests/TestWithoutReject.txt", "The good configuration without reject state, no exception will be catch"); 
-		testException("../tests/TestWithoutRejectEnd.txt", "If accept state are not follow by reject state and end too : catch exception"); 						
+
 
 	}
 
@@ -57,9 +49,6 @@ public class TestConfiguration {
 			System.out.println("true  : Test : "+str);
 			System.out.println("\t\t"+e.getMessage());
 		}
-
-
-
 	}
 
 	public static void testNoException(String path, String str){

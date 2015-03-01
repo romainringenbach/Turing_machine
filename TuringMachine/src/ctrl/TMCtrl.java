@@ -13,6 +13,7 @@ import view.TMView;
 import view.Tape;
 import data.Machine;
 import data.Transition;
+import data.TuringIO;
 
 public class TMCtrl{
 
@@ -66,7 +67,11 @@ public class TMCtrl{
 	
 	public TMCtrl(TMView v){
 		view = v;
-		data = new Machine();
+		try {
+			data = Machine.getMachine(TuringIO.getLOAD_PATH());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		lect = 0;
 		speed = 300;
 		ended = false;
@@ -283,7 +288,7 @@ public class TMCtrl{
 		stop = false;
 		view.getButStart().setEnabled(true);
 		view.getInputField().setEnabled(true);
-		data.getTuringIO().saveConfigurations(data.getConfigurations());
+		TuringIO.getInstance().saveConfigurations(data.getConfigurations());
 	}
 	
 	public String getSelectedRadioText(ButtonGroup buttonGroup) {

@@ -87,7 +87,6 @@ public class TMView extends JFrame{
 		this.setResizable(false);
 		this.setTitle("Turing Machine");
 		this.init();
-		//TODO:Load chosen file, not default one
 		JFileChooser chooser = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Text file", "txt");
 		chooser.setFileFilter(filter);
