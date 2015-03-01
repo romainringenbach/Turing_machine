@@ -129,7 +129,7 @@ public final class TuringSyntaxe {
 			ArrayList<String> stopStates = new ArrayList<String>();
 			String init_state;
 			String accept_state;
-			String reject_state;			
+			String reject_state = null;			
 
 			String[] areas = configuration.split(":");
 
@@ -184,7 +184,13 @@ public final class TuringSyntaxe {
 
 					if(!alphabet.equals(""))
 						if (this.matche(alphabet,this.pattern_oneChar)) {
-							machine_alphabet.add(Character.valueOf(alphabet.charAt(0)));
+							if (!machine_alphabet.contains(Character.valueOf(alphabet.charAt(0)))) {
+								machine_alphabet.add(Character.valueOf(alphabet.charAt(0)));
+							}
+							else {
+								throw new Exception("this symbole is already in machine_alphabet, error : "+alphabet);
+							}
+							
 						}
 						else {
 							throw new Exception("machine_alphabet must be a single symbole, error : "+alphabet);
@@ -211,7 +217,12 @@ public final class TuringSyntaxe {
 					
 					if(!alphabet.equals(""))
 						if (this.matche(alphabet,this.pattern_oneChar)) {
-							tape_alphabet.add(Character.valueOf(alphabet.charAt(0)));
+							if (!tape_alphabet.contains(Character.valueOf(alphabet.charAt(0)))) {
+								tape_alphabet.add(Character.valueOf(alphabet.charAt(0)));
+							}
+							else {
+								throw new Exception("this symbole is already in tape_alphabet, error : "+alphabet);
+							}
 						}
 						else {
 							throw new Exception("tape_alphabet must be a single symbole, error : "+alphabet);
@@ -413,6 +424,7 @@ public final class TuringSyntaxe {
 						for(int i = 0; i < transitions_with_unknow_state.size();i++){
 							tmp = transitions_with_unknow_state.get(i);
 							if (tmp.getNextState().equals(areas[11])){
+								transitions.add(tmp);
 								find = true;
 								transitions_with_unknow_state.remove(tmp);
 							}
@@ -458,6 +470,7 @@ public final class TuringSyntaxe {
 						for(int i = 0; i < transitions_with_unknow_state.size();i++){
 							tmp = transitions_with_unknow_state.get(i);
 							if (tmp.getNextState().equals(areas[13])){
+								transitions.add(tmp);
 								find = true;
 								transitions_with_unknow_state.remove(tmp);
 							}
@@ -479,21 +492,33 @@ public final class TuringSyntaxe {
 					throw new Exception("reject_state must be a single word, error : "+areas[13]);
 				}
 
+				// End
+
+				if (this.matche(areas[14],this.pattern_end)) {
+					
+				}
+				else {
+					throw new Exception("reject_state area must be follow by \" :end: \", error : "+areas[14]);
+
+				}
+
 			}
+
 			else {
-				throw new Exception("accept_state area must be follow by reject_state area, error : "+areas[12]);
+
+				// End
+
+				if (this.matche(areas[12],this.pattern_end)) {
+					
+				}
+				else {
+					throw new Exception("accept_state area must be follow by \" :end: \" or reject_state, error : "+areas[14]);
+
+				}
 
 			}
 
-			// End
-
-			if (this.matche(areas[14],this.pattern_end)) {
-				
-			}
-			else {
-				throw new Exception("reject_state area must be follow by \" :end: \", error : "+areas[14]);
-
-			}		
+	
 			
 			if (transitions_with_unknow_state.size() != 0) {
 
