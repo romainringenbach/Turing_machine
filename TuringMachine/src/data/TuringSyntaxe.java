@@ -575,6 +575,8 @@ public final class TuringSyntaxe {
 				throw new Exception("There are some unknow next states in transitions, error : "+some_states);
 			}
 
+			transitions = Transition.toSort(transitions);
+
 			machine = new Machine 		(transitions,
 										 machine_alphabet,
 										 tape_alphabet,
