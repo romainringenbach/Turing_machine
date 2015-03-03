@@ -12,7 +12,7 @@ states:
   
 :tape_alphabet:
 
-  ab b c
+  a b c
   d e f # [ ]
   
 :transitions:

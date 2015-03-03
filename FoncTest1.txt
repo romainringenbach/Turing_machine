@@ -3,41 +3,80 @@ states:
  q0,
  q1,
  q2,
- q3 S,
+ q3,
+ q4,
+ q5,
+ q6,
+ q7 S,
 
 :machine_alphabet:
 
-  0 1
+ 0 1
   
 :tape_alphabet:
 
- 0 1 _
+ 0 1 a b _ #
   
 :transitions:
 
- q0 0 q1 0 >,
- q0 1 q2 1 >,
- q0 _ rej _ >,
- q1 _ acc _ >,
- q1 0 rej 0 >,
- q1 1 rej 1 >,
- q2 0 q3 0 >,
+ q0 _ acc # >,
+ q0 0 q2 b >,
+ q0 1 q1 a >,
+ q0 # rej # >,
+ q0 a rej a >,
+ q0 b rej b >,
+ q1 _ q3 # >,
+ q1 0 q1 0 >,
+ q1 1 q1 1 >,
+ q1 # rej # >,
+ q1 a rej a >,
+ q1 b rej b >,
+ q2 0 q2 0 >,
  q2 1 q2 1 >,
- q2 _ rej _ >,
+ q2 _ q5 # >,
+ q2 # rej # >,
+ q2 a rej a >,
+ q2 b rej b >,
+ q3 # q3 # >,
  q3 0 q3 0 >,
- q3 1 q2 1 >,
- q3 _ acc _ >,
+ q3 1 q3 1 >,
+ q3 _ q4 1 <,
+ q3 a rej a >,
+ q3 b rej b >,
+ q4 # q4 # <,
+ q4 0 q4 0 <,
+ q4 1 q4 1 <,
+ q4 a q7 1 >,
+ q4 _ rej _ >,
+ q4 b rej b >,
+ q5 # q5 # >,
+ q5 0 q5 0 >,
+ q5 1 q5 1 >,
+ q5 _ q6 0 <,
+ q5 a rej a >,
+ q5 b rej b >,
+ q6 # q6 # <,
+ q6 0 q6 0 <,
+ q6 1 q6 1 <,
+ q6 b q7 0 >,
+ q6 a rej a >,
+ q7 1 q3 a >,
+ q7 0 q5 b >,
+ q7 # acc # >,
+ q7 _ rej _ >,
+ q7 a rej a >,
+ q7 b rej b >,
 
 :init_state:
 
- q0
+  q0
   
 :accept_state:
 
- acc
+  acc
   
 :reject_state:
 
- rej
+  rej
   
 :end 
