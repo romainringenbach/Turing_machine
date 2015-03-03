@@ -1,0 +1,43 @@
+states:
+
+ q0,
+ q1,
+ q2,
+ q3 S,
+
+:machine_alphabet:
+
+ 0 1
+  
+:tape_alphabet:
+
+ 0 1 _
+  
+:transitions:
+
+q0 0 q1 0 >,
+q0 1 q2 1 >,
+q0 _ rej _ >,
+q1 _ acc _ >,
+q1 0 rej 0 >,
+q1 1 rej 1 >,
+q2 0 q3 0 >,
+q2 1 q2 1 >,
+q2 _ rej _ >,
+q3 0 q3 0 >,
+q3 1 q2 1 >,
+q3 _ acc _ >,
+
+:init_state:
+
+  q0
+  
+:accept_state:
+
+  acc
+  
+:reject_state:
+
+  rej
+  
+:end

@@ -140,7 +140,7 @@ public class Machine {
 	 */
 	public boolean isReject(String state){
 		boolean ret = false;
-		if (reject_state.equals(state)) {
+		if (reject_state!= null && reject_state.equals(state)) {
 			ret = true;
 		}
 		return ret;
