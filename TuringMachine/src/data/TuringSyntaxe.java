@@ -131,7 +131,10 @@ public final class TuringSyntaxe {
 			ArrayList<String> stopStates = new ArrayList<String>();
 			String init_state;
 			String accept_state;
-			String reject_state = null;			
+			String reject_state = null;		
+
+
+			int size = 0;	
 
 			String[] areas = configuration.split(":");
 
@@ -269,6 +272,8 @@ public final class TuringSyntaxe {
 							Character newS;
 							String dir;
 							String next;
+
+
 							
 							boolean unknow = false;
 
@@ -349,7 +354,9 @@ public final class TuringSyntaxe {
 								tmp = it.next();
 
 								find = (tmp.getCurrentState().equals(current) && tmp.getReadSymbole().equals(readS));
-							}								
+							}	
+
+							System.gc();							
 
 							if(!find){
 
@@ -366,8 +373,6 @@ public final class TuringSyntaxe {
 							else{
 								throw new Exception("there are already transitions with this current state and current symbol, error : "+transition);
 							}
-							
-
 
 						}
 						else {
@@ -420,17 +425,47 @@ public final class TuringSyntaxe {
 				if (this.matche(areas[11],this.pattern_oneWord)) {
 					if (!states.contains(areas[11]) && !stopStates.contains(areas[11])) {
 						Boolean find = false;
-
 						Transition tmp = null;
 
-						for(int i = 0; i < transitions_with_unknow_state.size();i++){
-							tmp = transitions_with_unknow_state.get(i);
-							if (tmp.getNextState().equals(areas[11])){
+						/*
+
+						System.gc();
+
+						Iterator<Transition> it = transitions_with_unknow_state.iterator();
+
+						while(it.hasNext()){
+
+							tmp = it.next();
+							if (tmp.getNextState().equals(areas[13])){
 								transitions.add(tmp);
 								find = true;
 								transitions_with_unknow_state.remove(tmp);
 							}
-						}						
+
+						}
+
+						*/
+
+
+						Object[] array = transitions_with_unknow_state.toArray();
+
+						for(int i = 0; i < array.length;i++){
+
+							try {
+								tmp = (Transition) array[i];
+
+								if (tmp.getNextState().equals(areas[11])){
+									transitions.add(tmp);
+									find = true;
+									transitions_with_unknow_state.remove(tmp);
+								}
+							}
+							catch (Exception e){}	
+
+						}
+
+
+					
 
 						if ( find ){
 							accept_state = areas[11];
@@ -464,26 +499,50 @@ public final class TuringSyntaxe {
 				areas[13] = this.purge(areas[13]);
 				
 				if (this.matche(areas[13],this.pattern_oneWord)) {
+
+
+
 					if (!states.contains(areas[13]) && !stopStates.contains(areas[13])) {
-						Boolean find = false;
+
+						reject_state = areas[13];
 
 						Transition tmp = null;
 
-						for(int i = 0; i < transitions_with_unknow_state.size();i++){
-							tmp = transitions_with_unknow_state.get(i);
+						/*
+
+						System.gc();
+
+						Iterator<Transition> it = transitions_with_unknow_state.iterator();
+
+						while(it.hasNext()){
+
+							tmp = it.next();
 							if (tmp.getNextState().equals(areas[13])){
 								transitions.add(tmp);
-								find = true;
 								transitions_with_unknow_state.remove(tmp);
 							}
+
 						}
 
-						if ( find ){
-							reject_state = areas[13];							
+						*/
+
+
+						Object[] array = transitions_with_unknow_state.toArray();
+
+						for(int i = 0; i < array.length;i++){
+
+							try {
+								tmp = (Transition) array[i];
+
+								if (tmp.getNextState().equals(areas[13])){
+									transitions.add(tmp);
+									transitions_with_unknow_state.remove(tmp);
+								}
+							}
+							catch (Exception e){}	
+
 						}
-						else {
-							throw new Exception("reject_state must be in a transition (minimum) as next state, error : "+areas[13]);
-						}
+
 						
 					}
 					else {
@@ -494,33 +553,23 @@ public final class TuringSyntaxe {
 					throw new Exception("reject_state must be a single word, error : "+areas[13]);
 				}
 
-				// End
-
-				if (this.matche(areas[14],this.pattern_end)) {
-					
-				}
-				else {
-					throw new Exception("reject_state area must be follow by \" :end: \", error : "+areas[14]);
-
-				}
-
 			}
 
 			else {
 
-				// End
+				throw new Exception("accept_state area must be follow reject_state , error : "+areas[14]);
 
-				if (this.matche(areas[12],this.pattern_end)) {
-					
-				}
-				else {
-					throw new Exception("accept_state area must be follow by \" :end: \" or reject_state, error : "+areas[14]);
 
-				}
 
 			}
 
-	
+			if (this.matche(areas[14],this.pattern_end)) {
+					
+			}
+			else {
+				throw new Exception("reject_state area must be follow by \" :end: \" , error : "+areas[14]);
+
+			}	
 			
 			if (transitions_with_unknow_state.size() != 0) {
 
@@ -530,7 +579,7 @@ public final class TuringSyntaxe {
 
 				while(it.hasNext()){
 
-					some_states = some_states + it.next().getNextState() + ",";
+					some_states = some_states + it.next().toString() + ",";
 
 				}
 

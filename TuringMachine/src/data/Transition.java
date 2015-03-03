@@ -36,5 +36,29 @@ public class Transition {
 	public String getNextState() {
 		return nextState;
 	}
+
+	public boolean equals(Object o){
+
+		Transition tmp = (Transition) o;
+
+		boolean ret = false;
+
+		if (
+
+			this.currentState.equals(tmp.currentState) &&
+			this.readSymbole.equals(tmp.readSymbole) &&
+			this.newSymbole.equals(tmp.newSymbole) &&
+			this.direction.equals(tmp.direction) &&
+			this.nextState.equals(tmp.nextState)
+
+			) {
+
+			ret = true;
+			
+		}
+
+		return ret;
+
+	}
 	
 }
