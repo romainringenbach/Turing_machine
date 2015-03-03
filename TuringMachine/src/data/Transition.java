@@ -1,5 +1,7 @@
 package data;
 
+import java.util.ArrayList;
+
 public class Transition {
 
 	public String currentState;
@@ -60,5 +62,87 @@ public class Transition {
 		return ret;
 
 	}
+
+	public int compareTo(Transition transition){
+
+		int ret = -1;
+
+		ret = this.currentState.compareTo(transition.currentState);
+
+		if(ret == 0){
+			ret = this.readSymbole.compareTo(transition.readSymbole);
+
+		}
+
+		return ret;
+
+	}
+
+	public static ArrayList<Transition> toSort(ArrayList<Transition> transitions){
+
+		Transition[] tabTransitions = new Transition[transitions.size()];
+
+		tabTransitions = transitions.toArray(tabTransitions);
+
+		int first = 0;
+		int last = tabTransitions.length - 1;
+		quickSort(tabTransitions,first,last);
+
+		ArrayList<Transition> ret = new ArrayList<Transition>();
+
+		for (int i = 0; i < tabTransitions.length; i++){
+			ret.add(tabTransitions[i]);
+		}
+
+		return ret;
+		
+	}	
+
+	private static void quickSort(Transition[] transitions, int first, int last){
+
+		if(first < last){
+
+			int pivot = (int) (last-first)/2 + first;
+					
+			pivot = partition(transitions, first, pivot, last);
+			quickSort(transitions, first, pivot - 1);
+			quickSort(transitions, pivot+1, last);
+
+		}
+
+
+
+	}
+
+	private static int partition(Transition[] transitions, int first, int pivot, int last){
+
+		change(transitions,pivot,last);
+
+		int j = first;
+
+		for (int i = first; i < last; i++){
+
+			if(transitions[last].compareTo(transitions[i]) >= 0){
+				change (transitions, i,j);
+				j++;
+			}
+
+		}
+
+		change (transitions,last,j);
+		return j;
+
+
+
+	}
+
+	private static void change(Transition[] transitions, int a, int b){
+
+		Transition tmp = transitions[a];
+		transitions[a] = transitions[b];
+		transitions[b] = tmp;
+
+
+	}	
 	
 }
