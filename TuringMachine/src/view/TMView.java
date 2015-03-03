@@ -20,6 +20,7 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
@@ -87,7 +88,14 @@ public class TMView extends JFrame{
 		this.setResizable(false);
 		this.setTitle("Turing Machine");
 		this.init();
+		
+		this.setListeners();
+		this.pack();
+		this.setLocationRelativeTo(null);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setVisible(true);
 		JFileChooser chooser = new JFileChooser();
+		chooser.setDialogTitle("Ouvrir le fichier de configuration");
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Text file", "txt");
 		chooser.setFileFilter(filter);
 		int returnVal = chooser.showOpenDialog(this);
@@ -95,12 +103,6 @@ public class TMView extends JFrame{
 			TuringIO.setLOAD_PATH(chooser.getSelectedFile().getAbsolutePath());
 			this.loadData();
 		}
-		//this.loadData();
-		this.setListeners();
-		this.pack();
-		this.setLocationRelativeTo(null);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setVisible(true);
 	}
 	
 	private void init(){
@@ -249,8 +251,17 @@ public class TMView extends JFrame{
 		
 		menu_fichier = new JMenu("Fichier");
 			menu_charger = new JMenuItem("Charger");
+			menu_charger.setAccelerator(KeyStroke.getKeyStroke(
+			        java.awt.event.KeyEvent.VK_C, 
+			        java.awt.Event.CTRL_MASK));
 			menu_sauver = new JMenuItem("Sauver");
+			menu_sauver.setAccelerator(KeyStroke.getKeyStroke(
+			        java.awt.event.KeyEvent.VK_S, 
+			        java.awt.Event.CTRL_MASK));
 			menu_fermer = new JMenuItem("Fermer");
+			menu_fermer.setAccelerator(KeyStroke.getKeyStroke(
+			        java.awt.event.KeyEvent.VK_Q, 
+			        java.awt.Event.CTRL_MASK));
 			
 		menu_fichier.add(menu_charger);
 		menu_fichier.add(menu_sauver);

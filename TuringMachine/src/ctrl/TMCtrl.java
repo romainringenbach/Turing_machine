@@ -70,7 +70,8 @@ public class TMCtrl{
 		try {
 			data = Machine.getMachine(TuringIO.getLOAD_PATH());
 		} catch (Exception e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,e.getMessage());
+			System.exit(0);
 		}
 		lect = 0;
 		speed = 300;
@@ -115,8 +116,10 @@ public class TMCtrl{
 	 * Do a single transition
 	 */
 	public void startStepButton(){
-		started = true;
-		view.getInputField().setEnabled(false);
+		if(!started){
+			started = true;
+			view.getInputField().setEnabled(false);
+		}
 		if(!ended){
 			TMCtrl.this.doTransition();
 		}
@@ -140,6 +143,7 @@ public class TMCtrl{
 	
 	
 	public void resetButton(){
+		this.stopButton();
 		tape.reset();
 		view.getInputField().setText("");
 		view.getTable().getSelectionModel().clearSelection();
@@ -157,18 +161,24 @@ public class TMCtrl{
 	private void doTransition(){
 		view.setStateLabelColor(Color.WHITE);
 		//Scroll the panel to the head
-		//view.getScrollTrans().getViewport().setViewPosition(new Point(0,data.getTrans().indexOf(currentTrans)*12));
+		
+		//For unknown reasons, the autoscroll of the transition table make some trouble in the "start" mode.
+		//view.getScrollTrans().getVerticalScrollBar().setValue(data.getTrans().indexOf(currentTrans)*12);
+		
+		//Autoscroll the tape to the head position (30 is the case's size)
 		if(lect >= 9)
 			vport.setViewPosition(new Point(lect*30-8*30,0));
 		
+		//Set the current elements of the machine
 		currentChar = tape.getChar(lect);
 		currentTrans = data.getTransitionFromSym(currentChar, currentState);
 		
+		//Update the old head
 		tape.setDefaultColor(lect);
 		//Overwrite the new symbole
 		tape.setChar(lect, currentTrans.getNewSymbole());
 		//Set the direction of the head
-		if(currentTrans.getDirection().equals(">")) 
+		if(currentTrans.getDirection().equals(">"))
 			lect++;
 		else if(lect > 0)
 			lect--;
@@ -181,16 +191,16 @@ public class TMCtrl{
 			view.setStateLabel(nextS);
 			view.getStateLabel().setBackground(new Color(0x00D915));
 			view.getStateLabel().setForeground(Color.WHITE);
-			JOptionPane.showMessageDialog(view, "Etat acceptant !");
 			this.end();
+			JOptionPane.showMessageDialog(view, "Etat acceptant !");
 		}
 		else if(data.isReject(nextS)){
 			//If the state is 'reject'
 			view.setStateLabel(nextS);
 			view.getStateLabel().setBackground(Color.RED);
 			view.getStateLabel().setForeground(Color.WHITE);
-			JOptionPane.showMessageDialog(view, "Etat rejetant !");
 			this.end();
+			JOptionPane.showMessageDialog(view, "Etat rejetant !");
 		}
 		else{
 			//Set the new state
@@ -223,8 +233,7 @@ public class TMCtrl{
 		}
 		String config = first+currentState+last;
 		view.setConfigField(config);
-		if(started)
-			data.addConfig(config);
+		data.addConfig(config);
 	}
 	
 	public void reset(){
@@ -237,8 +246,6 @@ public class TMCtrl{
 		tape = view.getTapePanel();
 		currentState = data.getInitState();
 	}
-	
-	
 
 	/**
 	 * Setup the tape with the given string in the field and the first state
@@ -267,6 +274,7 @@ public class TMCtrl{
 				view.setStateLabel(currentState);
 				view.getTable().setRowSelectionInterval(data.getTrans().indexOf(currentTrans), data.getTrans().indexOf(currentTrans));
 				ready = true;
+				data.resetConfigurations();
 				this.setConfig();
 			}
 			else {
@@ -275,13 +283,12 @@ public class TMCtrl{
 			}
 		}
 		return ret;
-
 	}
 	
 	/**
-	 * Reset the machine at the begining, ready to start again.
+	 * Reset the machine at the beginning, ready to start again.
 	 */
-	public void end(){
+	private void end(){
 		ended = true;
 		started = false;
 		running = false;

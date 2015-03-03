@@ -82,6 +82,7 @@ public class TMListener implements ActionListener, KeyListener, ItemListener{
 		//MENU
 		if(src == view.getMenu_charger()){
 			JFileChooser chooser = new JFileChooser();
+			chooser.setDialogTitle("Ouvrir le fichier de configuration");
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("Text file", "txt");
 			chooser.setFileFilter(filter);
 			int returnVal = chooser.showOpenDialog(view);
@@ -92,6 +93,8 @@ public class TMListener implements ActionListener, KeyListener, ItemListener{
 		}
 		if(src == view.getMenu_sauver()){
 			JFileChooser chooser = new JFileChooser();
+			chooser.setDialogTitle("Choisir de répertoire de sauvegarde");
+			chooser.setApproveButtonText("Valider");
 			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			int returnVal = chooser.showOpenDialog(view);
 			if(returnVal == JFileChooser.APPROVE_OPTION) {

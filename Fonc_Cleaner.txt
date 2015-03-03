@@ -1,9 +1,6 @@
 states:
 
  q0,
- q1,
- q2,
- q3 S,
 
 :machine_alphabet:
 
@@ -26,6 +23,7 @@ q0 _ acc _ >,
 :accept_state:
 
   acc
-  
-  
+
+:reject_state:
+    
 :end

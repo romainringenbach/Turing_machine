@@ -13,9 +13,7 @@ public final class TuringSyntaxe {
 	private String regex_states;
 	private String regex_stopState;
 	private String regex_machine_alphabet;
-	private String regex_aMachine_alphabet;
 	private String regex_tape_alphabet;
-	private String regex_aTape_alphabet;
 	private String regex_transitions;
 	private String regex_transition;
 	private String regex_init_state;
@@ -29,9 +27,7 @@ public final class TuringSyntaxe {
 	private Pattern pattern_states;
 	private Pattern pattern_stopState;
 	private Pattern pattern_machine_alphabet;
-	private Pattern pattern_aMachine_alphabet;
 	private Pattern pattern_tape_alphabet;
-	private Pattern pattern_aTape_alphabet;
 	private Pattern pattern_transitions;
 	private Pattern pattern_transition;
 	private Pattern pattern_init_state;
@@ -65,9 +61,7 @@ public final class TuringSyntaxe {
 		regex_states = "(states)";
 		regex_stopState = "(([^\\s])*+(\\s)*+(S))";
 		regex_machine_alphabet = "(machine_alphabet)";
-		regex_aMachine_alphabet = "([^\\s\\t]*)";  
 		regex_tape_alphabet = "(tape_alphabet)";
-		regex_aTape_alphabet = "([^\\s\\t]*)";	
 		regex_transitions = "(transitions)";
 		regex_transition = "([^\\s]*+(\\s)+[^\\s]*+(\\s)+[^\\s]*+(\\s)+[^\\s]*+(\\s)+[<>])";
 		regex_init_state = "(init_state)";
@@ -81,9 +75,7 @@ public final class TuringSyntaxe {
 		pattern_states = Pattern.compile(regex_states);
 		pattern_stopState = Pattern.compile(regex_stopState);
 		pattern_machine_alphabet = Pattern.compile(regex_machine_alphabet);
-		pattern_aMachine_alphabet = Pattern.compile(regex_aMachine_alphabet);
 		pattern_tape_alphabet = Pattern.compile(regex_tape_alphabet);
-		pattern_aTape_alphabet = Pattern.compile(regex_aTape_alphabet);
 		pattern_transitions = Pattern.compile(regex_transitions);
 		pattern_transition = Pattern.compile(regex_transition);
 		pattern_init_state = Pattern.compile(regex_init_state);
@@ -132,9 +124,6 @@ public final class TuringSyntaxe {
 			String init_state;
 			String accept_state;
 			String reject_state = null;		
-
-
-			int size = 0;	
 
 			String[] areas = configuration.split(":");
 
@@ -613,13 +602,12 @@ public final class TuringSyntaxe {
 
 		try {
 
-			Machine test = this.checkAndCreate(path);
+			this.checkAndCreate(path);
 			ret = true;
 		}
 
 		catch (Exception e ){
 
-			System.out.println(e.getMessage());
 			e.printStackTrace();
 
 		}

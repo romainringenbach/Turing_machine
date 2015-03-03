@@ -6,8 +6,6 @@ import java.util.NoSuchElementException;
 
 public class Machine {
 	
-	private static TuringIO io;
-
 	/**
 	 * Set of states
 	 */
@@ -49,62 +47,40 @@ public class Machine {
 	private String reject_state;
 	
 	public static Machine getMachine() throws Exception{
-
 		TuringSyntaxe ts = TuringSyntaxe.getInstance();
-
 		return ts.checkAndCreate(null);
-
-		/*
-
-		io = TuringIO.getInstance();
-		this.machine_alphabet = io.loadMachineAlpha();
-		this.tape_alphabet = io.loadTapeAlpha();
-		this.trans = io.loadTrans();
-		this.init_state = io.loadInitState();
-		this.accept_state = io.loadAcceptState();
-		this.reject_state = io.loadRejectState();
-		this.stop_states = io.loadStopStates();
-		configurations = new ArrayList<String>();
-
-		*/
-
 	}
 
 	public static Machine getMachine(String path) throws Exception{
-
 		TuringSyntaxe ts = TuringSyntaxe.getInstance();
-
 		return ts.checkAndCreate(path);		
-
 	}
 
-	public Machine 		(ArrayList<Transition> trans,
-						 ArrayList<Character> machine_alphabet,
-						 ArrayList<Character> tape_alphabet,
-						 ArrayList<String> stop_states,
-						 String init_state,
-						 String accept_state,
-						 String reject_state
-						){
+	public Machine (ArrayList<Transition> trans,
+					ArrayList<Character> machine_alphabet,
+					ArrayList<Character> tape_alphabet,
+					ArrayList<String> stop_states,
+					String init_state,
+					String accept_state,
+					String reject_state
+					){
 
-
-		this.machine_alphabet 	= machine_alphabet;
-		this.tape_alphabet 		= tape_alphabet;
-		this.trans 				= trans;
-		this.init_state 		= init_state;
-		this.accept_state 		= accept_state;
-		this.reject_state 		= reject_state;
-		this.stop_states 		= stop_states;		
+		this.machine_alphabet = machine_alphabet;
+		this.tape_alphabet = tape_alphabet;
+		this.trans = trans;
+		this.init_state = init_state;
+		this.accept_state = accept_state;
+		this.reject_state = reject_state;
+		this.stop_states = stop_states;		
 		configurations = new ArrayList<String>();
 
 	}
 
 	/**
 	 *	For given state and symbol, return the unique associated Transition
-	 *
 	 *	@param symbol the current symbol
 	 *	@param state the current state
-	 *	@return Return the next Transition object to run
+	 *	@return Return the next Transition object to run from the given arguments
 	 */
 	public Transition getTransitionFromSym(Character redChar, String state){
 		Transition ret = null;
@@ -120,11 +96,10 @@ public class Machine {
 	}
 
 	/**
-	 *	This method indicate if the current state is the accept state
-	 *
-	 *	@param state The current state
-	 *	@return Return true if the state is accepting, false else
-	 */	
+	 *	Indicates if the state is the accept state 	
+	 *	@param state The state to check
+	 *	@return Return true if the state is the accept one
+	 */
 	public boolean isAccept(String state){
 		boolean ret = false;
 		if (accept_state.equals(state)) {
@@ -134,9 +109,9 @@ public class Machine {
 	}
 
 	/**
-	 *	This method indicate if the current state is the reject state 	
-	 *	@param state the current state
-	 *	@return 
+	 *	Indicates if the state is the reject state 	
+	 *	@param state The state to check
+	 *	@return Return true if the state is the reject one
 	 */
 	public boolean isReject(String state){
 		boolean ret = false;
@@ -146,6 +121,11 @@ public class Machine {
 		return ret;
 	}
 	
+	/**
+	 * Indicates if the state must stop the machine
+	 * @param state The state to check
+	 * @return Return true if the state is stopping
+	 */
 	public boolean isStop(String state){
 		boolean ret = false;
 		if(stop_states.contains(state)){
@@ -190,11 +170,11 @@ public class Machine {
 		return stop_states;
 	}
 	
-	public ArrayList<String> getConfigurations() {
-		return configurations;
+	public void resetConfigurations() {
+		configurations = new ArrayList<String>();
 	}
 	
-	public TuringIO getTuringIO() {
-		return io;
+	public ArrayList<String> getConfigurations() {
+		return configurations;
 	}
 }

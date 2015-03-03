@@ -25,16 +25,13 @@ public class TuringIO {
 	}
 	
 	private TuringIO(){
-		LOAD_PATH = "../Configuration.txt";
-		SAVE_PATH = "../TapeConfiguration.txt";
+		SAVE_PATH = "./TapeConfiguration.txt";
 	}
 
 	public String getConfiguration(String path){
-
 		String ret = null;
 
 		try {
-
 			if (path == null){
 				path = TuringIO.LOAD_PATH;
 			}
@@ -48,34 +45,16 @@ public class TuringIO {
 	 
 			while (line != null)
 			{
-			       
 			    ret = ret + "\n" + line;
 			    line = br.readLine();
-			       
 			}
-			 
 			br.close();
-
 		}
 		catch (Exception e){
-
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}	
-
 		return ret;
-
-
-	}
-	
-	private void loadBufferReader(){
-		FileReader fr;
-		try {
-			fr = new FileReader(new File(LOAD_PATH));
-			br = new BufferedReader(fr);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	private void loadBufferWriter(){
