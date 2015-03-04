@@ -185,10 +185,10 @@ public class TMCtrl{
 	
 	
 	/**
-	 * Do the next transition of the machine
-	 * Update the GUI
-	 * Check if the next state is a final one
-	 * [Stop mode]
+	 * Do the next transition of the machine<br>
+	 * Update the GUI<br>
+	 * Check if the next state is a final one<br>
+	 * [Stop mode]<br>
 	 * Stop the program if reaching a stop state
 	 */
 	private void doTransition(){
@@ -252,7 +252,7 @@ public class TMCtrl{
 	}
 	
 	/**
-	 * Set the current configuration on the GUI
+	 * Set the current configuration on the GUI<br>
 	 * Add the configuration to the configuration list
 	 */
 	private void setConfig(){
@@ -278,7 +278,7 @@ public class TMCtrl{
 	}
 	
 	/**
-	 * Setup the tape with the given string in the field and the first state
+	 * Setup the tape with the given string in the field and the first state<br>
 	 * This field can't be empty
 	 */
 	public void init(){
@@ -315,7 +315,7 @@ public class TMCtrl{
 	}
 	
 	/**
-	 * Indicate the machine reached a final state (accept or reject)
+	 * Indicate the machine reached a final state (accept or reject)<br>
 	 * Reset the machine at the beginning, ready to start again.
 	 */
 	private void end(){

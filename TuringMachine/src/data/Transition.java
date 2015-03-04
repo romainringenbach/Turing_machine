@@ -28,7 +28,8 @@ public class Transition {
 	}
 	
 	/**
-	 * @return Return the string representation of a Transition : [currentState readSymbole newSymbole direction nextState]
+	 * The string representation of a Transition : [currentState readSymbole newSymbole direction nextState]
+	 * @return Return the string representation of a Transition
 	 */
 	public String toString(){
 		return currentState + "  " + readSymbole + "  " + newSymbole + "  " + direction + "  " + nextState; 

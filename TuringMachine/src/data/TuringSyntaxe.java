@@ -620,6 +620,8 @@ public final class TuringSyntaxe {
 
 	/**
 	 *	Create because trim remove only white space, we need to remove \n \t \r char
+	 * @return Return the purged string
+	 * @param str The string to purge
 	 */
 	private String purge(String str){
 

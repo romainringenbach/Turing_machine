@@ -6,9 +6,15 @@ import javax.swing.table.AbstractTableModel;
 
 import data.Transition;
 
+/**
+ * Define a new TableModel to display all transition on the interface 
+ */
 public class TransitionTableModel extends AbstractTableModel{
 
 	private static final long serialVersionUID = 1L;
+	/**
+	 * The list of Transitions to display
+	 */
 	ArrayList<Transition> list;
 	
 	public TransitionTableModel(ArrayList<Transition> li) {

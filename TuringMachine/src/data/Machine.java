@@ -11,17 +11,18 @@ import java.util.NoSuchElementException;
 public class Machine {
 	
 	/**
-	 * Set of states
+	 * List of all transitions in the program
+	 * Diplayed in a table on the GUI
 	 */
 	private ArrayList<Transition> trans;
 
 	/**
-	 * The machine alphabet as Set
+	 * List of character the user can use for the input word
 	 */
 	private ArrayList<Character> machine_alphabet;
 
 	/**
-	 * The tape alphabet as Set
+	 * List of character the machine can use to write down on tape
 	 */
 	private ArrayList<Character> tape_alphabet;
 	
@@ -41,12 +42,12 @@ public class Machine {
 	private String init_state;
 
 	/**
-	 * The accept state
+	 * The state where the word is accepted
 	 */
 	private String accept_state;
 
 	/**
-	 * The reject state
+	 * The state where the word is rejected
 	 */	
 	private String reject_state;
 	
@@ -54,6 +55,7 @@ public class Machine {
 	 * Return the Machine, after checking all configuration file's syntax
 	 * @param path The path of configuration file
 	 * @return Return the instance of the Machine
+	 * @throws Exception If an error occured in the syntax checking
 	 */
 	public static Machine getMachine(String path) throws Exception{
 		TuringSyntaxe ts = TuringSyntaxe.getInstance();
@@ -82,7 +84,7 @@ public class Machine {
 
 	/**
 	 *	For given state and symbol, return the unique associated Transition
-	 *	@param symbol the current symbol
+	 *	@param redChar the current symbol
 	 *	@param state the current state
 	 *	@return Return the next Transition object to run from the given arguments
 	 */

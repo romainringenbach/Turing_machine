@@ -34,7 +34,7 @@ public class Tape extends JPanel {
 	private JPanel caseLabel;
 
 	/**
-	 * Init default values (Head color to yellow, nbcases to 50)
+	 * Init default values (Head color to yellow, nbcases to 50)<br>
 	 * Add 50 empty cases to the tape
 	 */
 	public Tape(){
