@@ -18,6 +18,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import view.TMView;
 import data.TuringIO;
 
+/**
+ * Implements all the listeners of GUI components
+ */
 public class TMListener implements ActionListener, KeyListener, ItemListener{
 	
 	private TMView view;
@@ -33,24 +36,23 @@ public class TMListener implements ActionListener, KeyListener, ItemListener{
 		/* --- KeyListener --- */	
 	@Override
 	public void keyPressed(KeyEvent e) {
+		//If enter on the input field, init the tape
 		if(e.getSource() == view.getInputField() && e.getKeyCode() == KeyEvent.VK_ENTER){
 			ctrl.init();
 		}
 	}
 	
-	/* --- Unused --- */
 	@Override
-	public void keyReleased(KeyEvent e) {
-		
-
-	}
-	@Override
-	public void keyTyped(KeyEvent e) {
+	public void keyTyped(KeyEvent e){
 		Character c = e.getKeyChar();
+		//Consume the key event if the character is not allowed in the machine alphabet
 		if(e.getSource() == view.getInputField() && !ctrl.getMachine().getMachineAlpha().contains(c)){
 			e.consume();
 		}
 	}
+	/* --- Unused --- */
+	@Override
+	public void keyReleased(KeyEvent e){;}
 	/* -------------- */
 	
 		/* ------------------- */	
@@ -60,21 +62,26 @@ public class TMListener implements ActionListener, KeyListener, ItemListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object src = e.getSource();
+		//Start
 		if(src == view.getButStart()){
-				ctrl.init();
+			ctrl.init();
 			ctrl.startButton(false);
 		}
+		//Transition by Transition
 		if(src == view.getButStep()){
-				ctrl.init();
+			ctrl.init();
 			ctrl.startStepButton();
 		}
+		//Step by Step
 		if(src == view.getButStep2()){
-				ctrl.init();
+			ctrl.init();
 			ctrl.step2Button();
 		}
+		//Stop
 		if(src == view.getButStop()){
 			ctrl.stopButton();
 		}
+		//Reset
 		if(src == view.getButReset()){
 			ctrl.resetButton();
 		}
@@ -127,7 +134,7 @@ public class TMListener implements ActionListener, KeyListener, ItemListener{
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		
+		//RadioButtons
 		if(e.getSource() == view.getMenu_radio_50() || e.getSource() == view.getMenu_radio_100() || e.getSource() == view.getMenu_radio_200()){
 			if(view.getMenu_radio_50().isSelected()){
 				view.getTapePanel().setNbCases(50);
@@ -157,6 +164,10 @@ public class TMListener implements ActionListener, KeyListener, ItemListener{
 	
 		/* -------------------- */
 	
+	/**
+	 * Setup the new controller when loading a new configuration file
+	 * @param c The new controller
+	 */
 	public void setCtrl(TMCtrl c){
 		ctrl = c;
 	}

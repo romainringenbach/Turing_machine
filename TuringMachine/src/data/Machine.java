@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+/**
+ * The Machine contains all the loaded data from configuration file
+ * Machine is a singleton. 
+ */
 public class Machine {
 	
 	/**
@@ -46,11 +50,11 @@ public class Machine {
 	 */	
 	private String reject_state;
 	
-	public static Machine getMachine() throws Exception{
-		TuringSyntaxe ts = TuringSyntaxe.getInstance();
-		return ts.checkAndCreate(null);
-	}
-
+	/**
+	 * Return the Machine, after checking all configuration file's syntax
+	 * @param path The path of configuration file
+	 * @return Return the instance of the Machine
+	 */
 	public static Machine getMachine(String path) throws Exception{
 		TuringSyntaxe ts = TuringSyntaxe.getInstance();
 		return ts.checkAndCreate(path);		

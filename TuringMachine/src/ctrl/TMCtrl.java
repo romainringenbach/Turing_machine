@@ -2,10 +2,7 @@ package ctrl;
 
 import java.awt.Color;
 import java.awt.Point;
-import java.util.Enumeration;
 
-import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import javax.swing.JViewport;
 
@@ -20,10 +17,14 @@ public class TMCtrl{
 	private TMView view;
 	private Machine data;
 	private Tape tape;
+	/**
+	 * [Start mode]
+	 * The delay between to transition
+	 */
 	private int speed;
 	
 	/**
-	 * Indicates the position of the reading head on the tape
+	 * Indicates the position of the head on the tape
 	 */
 	private int lect;
 	
@@ -31,7 +32,13 @@ public class TMCtrl{
 	 * The state of the program in a given moment
 	 */
 	private String currentState;
+	/**
+	 * The current reading character
+	 */
 	private Character currentChar;
+	/**
+	 * The transition just done before
+	 */
 	private Transition currentTrans;
 	
 	/**
@@ -45,7 +52,7 @@ public class TMCtrl{
 	private boolean ended;
 	
 	/**
-	 * True if the machine is running or paused
+	 * True if the machine is running, false if paused
 	 */
 	private boolean running;
 	
@@ -59,12 +66,23 @@ public class TMCtrl{
 	 */
 	private boolean ready;
 	private JViewport vport;
+	/**
+	 * The next state of the current transition
+	 */
 	private String nextS;
 	
+	/**
+	 * Launch the program
+	 * @param args You know what it is, Java.
+	 */
 	public static void main(String[] args) {
 		new TMView();
 	}
 	
+	/**
+	 * Initialize attributes to default values
+	 * @param v The main view
+	 */
 	public TMCtrl(TMView v){
 		view = v;
 		try {
@@ -88,6 +106,12 @@ public class TMCtrl{
 	
 	/**
 	 * Launch the machine. Don't stop before end.
+	 * Can be stoped if :
+	 * <ul>
+	 *  <li>ended = false : the program reach a final state</li>
+	 *  <li>running = true : the program is stoped (but not ended)</li>
+	 * </ul>
+	 * @param st True if the program must be run in Stop mode
 	 */
 	public void startButton(boolean st){
 		stop = st;
@@ -121,7 +145,7 @@ public class TMCtrl{
 			view.getInputField().setEnabled(false);
 		}
 		if(!ended){
-			TMCtrl.this.doTransition();
+			this.doTransition();
 		}
 	}
 	
@@ -133,15 +157,20 @@ public class TMCtrl{
 	}
 
 	/**
-	 * Stop the running program
+	 * Stop the running program [running = false]
 	 */
 	public void stopButton(){
-		running = false;
-		view.getInputField().setEnabled(true);
-		view.getButStart().setEnabled(true);
+		if(started){
+			running = false;
+			view.getInputField().setEnabled(true);
+			view.getButStart().setEnabled(true);
+		}
 	}
 	
-	
+	/**
+	 * Stop the program and
+	 * reset all the Turing Machine
+	 */
 	public void resetButton(){
 		this.stopButton();
 		tape.reset();
@@ -157,6 +186,10 @@ public class TMCtrl{
 	
 	/**
 	 * Do the next transition of the machine
+	 * Update the GUI
+	 * Check if the next state is a final one
+	 * [Stop mode]
+	 * Stop the program if reaching a stop state
 	 */
 	private void doTransition(){
 		view.setStateLabelColor(Color.WHITE);
@@ -218,9 +251,17 @@ public class TMCtrl{
 		}
 	}
 	
-	
+	/**
+	 * Set the current configuration on the GUI
+	 * Add the configuration to the configuration list
+	 */
 	private void setConfig(){
+		/* A configuration is the word at the left of the head,
+		   the current state, and the remaining letters (from head to right) */
+		
+		//Word before the head
 		String first = "";
+		//Word from the head, up to the end
 		String last = "";
 		for(int i=0;i<lect;i++){
 			first += view.getTapePanel().getChar(i).toString()+" ";
@@ -236,23 +277,11 @@ public class TMCtrl{
 		data.addConfig(config);
 	}
 	
-	public void reset(){
-		lect = 0;
-		speed = 300;
-		ended = false;
-		started = false;
-		running = false;
-		stop = false;
-		tape = view.getTapePanel();
-		currentState = data.getInitState();
-	}
-
 	/**
 	 * Setup the tape with the given string in the field and the first state
 	 * This field can't be empty
 	 */
-	public boolean init(){
-		boolean ret = true;
+	public void init(){
 		//Initialise only if the programm is not already started
 		if(!started){
 			//Set the scroll bar to the left born
@@ -274,18 +303,19 @@ public class TMCtrl{
 				view.setStateLabel(currentState);
 				view.getTable().setRowSelectionInterval(data.getTrans().indexOf(currentTrans), data.getTrans().indexOf(currentTrans));
 				ready = true;
+				//Reset all the list of configurations
 				data.resetConfigurations();
 				this.setConfig();
 			}
-			else {
+			else { //The input field can't be empty
 				JOptionPane.showMessageDialog(view, "Veuillez inscrire dans le champ ci-dessous le ruban initial.");
 				ready = false;
 			}
 		}
-		return ret;
 	}
 	
 	/**
+	 * Indicate the machine reached a final state (accept or reject)
 	 * Reset the machine at the beginning, ready to start again.
 	 */
 	private void end(){
@@ -297,26 +327,7 @@ public class TMCtrl{
 		view.getInputField().setEnabled(true);
 		TuringIO.getInstance().saveConfigurations(data.getConfigurations());
 	}
-	
-	public String getSelectedRadioText(ButtonGroup buttonGroup) {
-		String ret = "";
-        for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements();) {
-            AbstractButton button = buttons.nextElement();
-            if (button.isSelected()) {
-            	ret =  button.getText();
-            }
-        }
-        return ret;
-    }
-	
-	
-	
 	/* --------------- */
-	
-	
-	public Tape getTape(){
-		return tape;
-	}
 	
 	public Machine getMachine(){
 		return data;
@@ -330,6 +341,10 @@ public class TMCtrl{
 		return speed;
 	}
 	
+	/**
+	 * Set the new delay between two transitions
+	 * @param s The new delay
+	 */
 	public void setSpeed(int s){
 		speed = s;
 	}

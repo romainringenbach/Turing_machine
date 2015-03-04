@@ -8,15 +8,33 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Read the configuration file
+ * Write the result file
+ * 
+ * TuringIO is a singleton.
+ */
 public class TuringIO {
 	
 	private BufferedReader br;
 	private BufferedWriter bw;
+	/**
+	 * The path to access the configuration file
+	 */
 	private static String LOAD_PATH;
+	/**
+	 * The path to save the result file
+	 */
 	private static String SAVE_PATH;
 	
+	/**
+	 * The instance of the class
+	 */
 	private static TuringIO instance;
 	
+	/**
+	 * @return Return the instance of the class
+	 */
 	public static TuringIO getInstance(){
 		if(instance == null){
 			instance = new TuringIO();
@@ -24,6 +42,9 @@ public class TuringIO {
 		return instance;
 	}
 	
+	/**
+	 * Init the save path, by default, to the current directory
+	 */
 	private TuringIO(){
 		SAVE_PATH = "./TapeConfiguration.txt";
 	}
@@ -57,6 +78,9 @@ public class TuringIO {
 		return ret;
 	}
 	
+	/**
+	 * Load the buffer to write the result file
+	 */
 	private void loadBufferWriter(){
 		FileWriter fw;
 		try {
@@ -67,7 +91,10 @@ public class TuringIO {
 		}
 	}
 
-	
+	/**
+	 * Write the result file, containing all the configurations of the program
+	 * @param conf The list of configurations to write in the file
+	 */
 	public void saveConfigurations(ArrayList<String> conf){
 		this.loadBufferWriter();
 		

@@ -32,6 +32,9 @@ import ctrl.TMListener;
 import data.Machine;
 import data.TuringIO;
 
+/**
+ * The main GUI of the program 
+ */
 public class TMView extends JFrame{
 
 	private static final long serialVersionUID = 1L;
@@ -40,10 +43,19 @@ public class TMView extends JFrame{
 	private JPanel startPanel;
 	private JPanel stepPanel;
 	private JPanel resetPanel;
+	/**
+	 * Display the current configuration of the machine
+	 */
 	private JPanel configPanel;
 	private JLabel tapeLabel;
 	private JLabel inputLabel;
+	/**
+	 * The label displaying the allowed characters to input
+	 */
 	private JLabel alphaLabel;
+	/**
+	 * The label displaying the current state
+	 */
 	private JLabel stateLabel;
 	private JScrollPane tapeScrollPane;
 	private JScrollPane eastScrollPane;
@@ -52,12 +64,21 @@ public class TMView extends JFrame{
 	private JButton butStep;
 	private JButton butStep2;
 	private JButton butReset;
+	/**
+	 * The input of the tape
+	 */
 	private JTextField inputField;
 	private JTextField configField;
+	/**
+	 * The table displaying all the transitions
+	 */
 	private JTable table;
 	private TransitionTableModel model;
 	private Tape tapePanel;
 
+	/**
+	 * The machine containing all the datas loaded in configuration file
+	 */
 	private Machine data;
 	private JMenuBar menuBar;
 	private JMenu menu_fichier;
@@ -80,9 +101,20 @@ public class TMView extends JFrame{
 	private JRadioButtonMenuItem menu_radio_200;
 	private ButtonGroup groupCouleur;
 	private ButtonGroup groupCases;
+	/**
+	 * The controller of the machine, launching everything
+	 */
 	private TMCtrl ctrl;
+	/**
+	 * The listener of all components
+	 */
 	private TMListener listener;
 	
+	/**
+	 * Initialize the GUI
+	 * Set the window to fixed size and centered
+	 * Open a File Chooser to get the configuration file
+	 */
 	public TMView(){
 		super();
 		this.setResizable(false);
@@ -105,8 +137,10 @@ public class TMView extends JFrame{
 		}
 	}
 	
+	/**
+	 * Initialize the interface
+	 */
 	private void init(){
-		//Referrence Size : 600 x 400
 		
 		//Back
 		mainPanel = new JPanel();
@@ -329,6 +363,9 @@ public class TMView extends JFrame{
 		this.add(mainPanel);
 	}
 	
+	/**
+	 * Set the listeners of the components and tooltips
+	 */
 	private void setListeners(){
 		listener = new TMListener(this, ctrl);
 		inputField.addKeyListener(listener);
@@ -362,7 +399,11 @@ public class TMView extends JFrame{
 		butStep2.setToolTipText("Lance la machine jusqu'à un état pause");
 	}
 	
-	
+	/**
+	 * Load the data from the chosen configuration file
+	 * Create a new TMCtrl (so a new Machine too)
+	 * Fill in the table, tape, init state and configuration
+	 */
 	public void loadData(){
 		ctrl = new TMCtrl(this);
 		data = ctrl.getMachine();
@@ -435,15 +476,24 @@ public class TMView extends JFrame{
 		return stateLabel;
 	}
 	
+	/**
+	 * Change the background color
+	 * @param c The new color of the label
+	 */
 	public void setStateLabelColor(Color c){
 		stateLabel.setBackground(c);
 		if(c == Color.WHITE || c == Color.YELLOW){
+			//Black is better to see the text with those background colors !
 			stateLabel.setForeground(Color.BLACK);
 		}
 		else
 			stateLabel.setForeground(Color.WHITE);
 	}
 	
+	/**
+	 * Set the state to display in the label (the current one)
+	 * @param text The new text of the label
+	 */
 	public void setStateLabel(String text) {
 		stateLabel.setText(text);
 	}
@@ -452,6 +502,10 @@ public class TMView extends JFrame{
 		return configField;
 	}
 	
+	/**
+	 * Set the current configuration on the label
+	 * @param s The new configuration 
+	 */
 	public void setConfigField(String s){
 		configField.setText(s);
 	}
