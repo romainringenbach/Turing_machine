@@ -85,7 +85,7 @@ public class TMCtrl{
 			data = Machine.getMachine(TuringIO.getLOAD_PATH());
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null,e.getMessage());
-			System.exit(0);
+			System.exit(0); //Close the window
 		}
 		lect = 0;
 		speed = 300;
@@ -104,7 +104,7 @@ public class TMCtrl{
 	 * Launch the machine. Don't stop before end.
 	 * Can be stoped if :
 	 * <ul>
-	 *  <li>ended = false : the program reach a final state</li>
+	 *  <li>ended = false : the program reached a final state</li>
 	 *  <li>running = true : the program is stoped (but not ended)</li>
 	 * </ul>
 	 * @param st True if the program must be run in Stop mode

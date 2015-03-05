@@ -6,7 +6,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Read the configuration file
@@ -49,6 +52,11 @@ public class TuringIO {
 		SAVE_PATH = "./TapeConfiguration.txt";
 	}
 
+	/**
+	 * Read the file containing all the data of the program
+	 * @param path The path to the data file
+	 * @return Return the string containing the file
+	 */
 	public String getConfiguration(String path){
 		String ret = null;
 
@@ -92,14 +100,19 @@ public class TuringIO {
 	}
 
 	/**
-	 * Write the result file, containing all the configurations of the program
+	 * Write the result file, containing all the configurations of the program (result)
 	 * @param conf The list of configurations to write in the file
 	 */
 	public void saveConfigurations(ArrayList<String> conf){
 		this.loadBufferWriter();
 		
 		try {
-			bw.write("Configurations du programme FoncTrans.txt : \r\n\r\n");
+			//Write french date
+			TimeZone tz2 = TimeZone.getTimeZone("GMT+1" );
+			SimpleDateFormat sdf = new SimpleDateFormat();
+			sdf.setTimeZone(tz2); 
+			
+			bw.write("Le "+sdf.format(new Date())+"\r\n"+"Configurations du programme FoncTrans.txt :\r\n\r\n");
 			for(int i=0;i<conf.size();i++){
 				bw.write(conf.get(i)+"\r\n");
 			}
@@ -122,6 +135,6 @@ public class TuringIO {
 	}
 
 	public static void setSAVE_PATH(String path) {
-		SAVE_PATH = path+"/TapeConfiguration.txt";
+		SAVE_PATH = path+"/TuringResult.txt";
 	}
 }

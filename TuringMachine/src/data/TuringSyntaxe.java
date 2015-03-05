@@ -5,6 +5,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 
+/**
+ * Check the syntaxe of configuration file.
+ * Launch exception for each error detected.
+ * 
+ * TuringSyntaxe is a singleton.
+ */
 public final class TuringSyntaxe {
 
 	private String regex_direction;

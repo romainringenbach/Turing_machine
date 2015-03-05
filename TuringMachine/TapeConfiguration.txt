@@ -1,2 +1,10 @@
-Configurations du programme FoncTrans.txt : 
+Le 05/03/15 19:13
+ Configurations du programme FoncTrans.txt :
 
+q0 1 0 0 1 0 1 _
+_ q0 0 0 1 0 1 _
+_ _ q0 0 1 0 1 _
+_ _ _ q0 1 0 1 _
+_ _ _ _ q0 0 1 _
+_ _ _ _ _ q0 1 _
+_ _ _ _ _ _ q0 _
