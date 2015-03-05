@@ -328,7 +328,7 @@ public class TMView extends JFrame{
 			menu_cases = new JMenu("Nombre de cases vides");
 				menu_radio_50 = new JRadioButtonMenuItem("50");
 				menu_radio_100 = new JRadioButtonMenuItem("100");
-				menu_radio_200 = new JRadioButtonMenuItem("500");
+				menu_radio_200 = new JRadioButtonMenuItem("200");
 				
 			menu_cases.add(menu_radio_50);
 			menu_cases.add(menu_radio_100);

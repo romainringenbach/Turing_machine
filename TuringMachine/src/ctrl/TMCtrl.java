@@ -61,10 +61,6 @@ public class TMCtrl{
 	 */
 	public boolean stop;
 	
-	/**
-	 * True if the machine is ready to start (good input)
-	 */
-	private boolean ready;
 	private JViewport vport;
 	/**
 	 * The next state of the current transition
@@ -114,8 +110,11 @@ public class TMCtrl{
 	 * @param st True if the program must be run in Stop mode
 	 */
 	public void startButton(boolean st){
+		if(!started){
+			this.init();
+		}
 		stop = st;
-		if(ready){
+		if(view.getInputField().getText() != ""){
 			started = true;
 			running = true;
 			view.getButStart().setEnabled(false);
@@ -139,8 +138,9 @@ public class TMCtrl{
 	/**
 	 * Do a single transition
 	 */
-	public void startStepButton(){
+	public void stepButton(){
 		if(!started){
+			this.init();
 			started = true;
 			view.getInputField().setEnabled(false);
 		}
@@ -153,6 +153,9 @@ public class TMCtrl{
 	 * Launch the machine until a stop state
 	 */
 	public void step2Button(){
+		if(!started){
+			this.init();
+		}
 		this.startButton(true);
 	}
 
@@ -283,7 +286,6 @@ public class TMCtrl{
 	 */
 	public void init(){
 		//Initialise only if the programm is not already started
-		if(!started){
 			//Set the scroll bar to the left born
 			if(vport.getViewPosition().getX() > 0)
 				vport.setViewPosition(new Point(0,0));
@@ -302,16 +304,13 @@ public class TMCtrl{
 				view.setStateLabelColor(Color.WHITE);
 				view.setStateLabel(currentState);
 				view.getTable().setRowSelectionInterval(data.getTrans().indexOf(currentTrans), data.getTrans().indexOf(currentTrans));
-				ready = true;
 				//Reset all the list of configurations
 				data.resetConfigurations();
 				this.setConfig();
 			}
 			else { //The input field can't be empty
 				JOptionPane.showMessageDialog(view, "Veuillez inscrire dans le champ ci-dessous le ruban initial.");
-				ready = false;
 			}
-		}
 	}
 	
 	/**

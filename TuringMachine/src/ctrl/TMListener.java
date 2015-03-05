@@ -64,17 +64,14 @@ public class TMListener implements ActionListener, KeyListener, ItemListener{
 		Object src = e.getSource();
 		//Start
 		if(src == view.getButStart()){
-			ctrl.init();
 			ctrl.startButton(false);
 		}
 		//Transition by Transition
 		if(src == view.getButStep()){
-			ctrl.init();
-			ctrl.startStepButton();
+			ctrl.stepButton();
 		}
 		//Step by Step
 		if(src == view.getButStep2()){
-			ctrl.init();
 			ctrl.step2Button();
 		}
 		//Stop
@@ -113,10 +110,13 @@ public class TMListener implements ActionListener, KeyListener, ItemListener{
 			view.dispatchEvent(new WindowEvent(view, WindowEvent.WINDOW_CLOSING));
 		}
 		if(src == view.getMenu_ex1()){
-			System.out.println("Exemple 1");
+			TuringIO.setLOAD_PATH("./Fonc_Cleaner.txt");
+			view.loadData();
+			
 		}
 		if(src == view.getMenu_ex2()){
-			System.out.println("Exemple 2");
+			TuringIO.setLOAD_PATH("./Fonc_Copy_Word.txt");
+			view.loadData();
 		}
 		if(src == view.getMenu_vitesse()){
 			SpinnerNumberModel sModel = new SpinnerNumberModel(ctrl.getSpeed(), 0, 5000, 50);
