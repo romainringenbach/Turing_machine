@@ -1,99 +1,131 @@
 Création d'un fichier de configuration :
 
-C'est 7 zones et le dernier élément doivent s'enchaîner comme suit :
+Tout ce qui se trouve entre " ======= " doit être écrit dans le fichier.
 
-première zone
+Ces 7 zones et le dernier élément doivent s'enchaîner comme suit :
+
+Première zone
 =============
 
 	states:
 
 		un_etat,
 		un_etat_stoppant S,
-		un_autre_etat_non_stopant,
+		un_autre_etat_non_stoppant,
 
+=============
 
 Un état est définit par une suite de caractères. (hors \t \n \r \s)
+Il suffit d'ajouter un 'S' derrière un état pour indiquer qu'il est stoppant.
+Les états sont séparés par une virgule.
 
-deuxième zone
+
+Deuxième zone
 =============
 
 	:machine_alphabet:
 
 	 a b c 
 
-	 d e f
+	 d e
+	 f
 
-Un alphabet est constitué de caractères, un symbol est un caractère.
+=============
 
-troisième zone
+Un alphabet est constitué de caractères, un symbole est un caractère.
+Les caractères peuvent être écris en ligne, en colonne, ou les deux.
+Tous les caractères sont acceptés, hormis l'espace et les caractères trop spéciaux (∞, ᴓ, etc.).
+
+
+Troisième zone
 ==============
 
 	:tape_alphabet:
 
 	 a b c #
 
-	 d e f @
+	 1 2 3 @
+	 
+==============
 
- L'aphabet du ruban doit être constitué de l'aphabet machine
+ L'aphabet du ruban doit être constitué de l'aphabet machine au minimum.
+ Tout comme l'alphabet machine, les caractères peuvent être écrits en ligne, colonne, ou les deux.
 
-quatrième zone
+ 
+Quatrième zone
 ==============
 
 	:transitions:
 
-		un_etat 					a un_autre_etat_non_stopant d >	,
-		un_etat_stoppant 			b un_etat 					e <	,
-		un_autre_etat_non_stopant 	c un_etat_stoppant 			f < ,
+		etat_1 		a etat_3 	d 	> ,
+		etat_2		b etat_1	e 	< ,
+		etat_3 		c etat_2 	f 	< ,
 
+==============
 
 Une transition se compose comme suit : 
-un état, doit être définit en zone 1
-un symbol, doit être définit en zone 3
-l'état suivant, doit être définit en zone 1, ou 6 ou 7
-le nouveau symbol, doit être définit en zone 3 
-la direction, doit être soit < soit >	
+	un état, doit être définit en zone 1
+	un symbole, doit être définit en zone 3
+	l'état suivant, doit être définit en zone 1, 6 ou 7
+	le nouveau symbole, doit être définit en zone 3 
+	la direction, doit être soit < (gauche) soit > (droite)
 
-cinquième zone
+Une virgule sépare chaque transition.
+	
+	
+Cinquième zone
 ==============
 
 	:init_state:
 
 	  etat_initial
 
+==============
+	  
 Doit être présent dans la zone 1
-Se définit comme un état  
+Se définit comme un état, sans la virgule à la fin.
 
-sixième zone
+
+Sixième zone
 ============
   
 	:accept_state:
 
 	  etat_acceptant
 
-Se définit comme un état
+============
+	  
+Se définit comme un état, sans la virgule à la fin.
 Doit être présent dans au moins une transition en tant qu'état suivant   
 
-septième zone
+
+Septième zone
 =============
 
 	:reject_state:
 
 	  etat_rejetant  
+	  
+=============
 
-Se définit comme un état  
+Se définit comme un état, sans la virgule à la fin.
+Cet état n'est pas obligatoire, dépent de l'automate définit.
 
-dernier élément
+
+Dernier élément
 ===============
     
 	:end
+	
+===============
 
-finit le fichier
+Indique que le fichier est terminé.
 
 
 
 Sont testés :
 
-La forme des états, symbols
+La forme des états, symboles
 
 La présence de l'alphabet machine dans l'aphabet ruban
 
@@ -106,4 +138,5 @@ La présence de l'état acceptant dans au moins une transition en tant qu'état 
 La présence de l'état suivant dans les transitions, soit dans la zone d'états, soit dans la déclaration de l'état acceptant, ou l'état rejetant
 
 La bonne disposition des zones
+
 
