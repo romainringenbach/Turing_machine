@@ -1,0 +1,48 @@
+
+Projet Machine de Turing
+========================
+
+Membres du groupe :
+ - Florent Catiau-Tristant
+ - Romain Ringenbach
+ - Yoann Boyère
+ - Mehdi Haddad
+
+
+Cette archive doit contenir :
+
+  |`-- src
+  |   `-- data
+  |      `-- Machine.java
+  |      `-- Transition.java
+  |      `-- TuringIO.java
+  |      `-- TuringSyntaxe.java
+  |   `-- view
+  |      `-- Tape.java
+  |      `-- TuringView.java
+  |      `-- TransitionTableModel.java
+  |   `-- ctrl
+  |      `-- TMCtrl.java
+  |      `-- TMListener.java
+  |   `-- tests
+  |      `-- TestConfiguration.java
+  |      `-- test.sh
+  |-- doc
+  |   `-- [html]
+  |`-- tests
+  |   `-- [.txt]
+  |
+  |`-- Fonc_Cleaner.txt
+  |`-- Fonc_Copy_Word.txt
+  |`-- Fonc_Odd_Binary.txt
+  |`-- HowToConfig[Linux].txt
+  |
+  |`-- Rapport_Turing.pdf
+  |`-- TapeConfiguration.txt
+  |`-- TuringMachine.jar
+  |
+  |`-- ClassDiagram.jpg
+
+
+Afin de garder les fonctions "Exemple 1" et "Exemple 2" de l'application fonctionnelles,
+laisser les fichiers "Fonc_XXX.txt" dans le même répertoire que le .jar.
